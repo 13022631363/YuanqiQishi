@@ -17,9 +17,11 @@ junit = "4.13.2"
 kotlin = "1.9.22"
 kotlinxDatetime = "0.4.1"
 kotlinxSerializationJson = "1.6.2"
+navigationCompose = "2.7.6"
 slf4jApi = "2.0.10"
 
 [libraries]
+androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }

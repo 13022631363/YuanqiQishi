@@ -50,6 +50,7 @@ kotlin {
 
             implementation(libs.slf4j.api)
             implementation(libs.gson)
+            implementation(libs.androidx.navigation.compose)
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
