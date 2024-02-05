@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsCompose)
+    id("org.jetbrains.kotlin.plugin.serialization") version("1.4.30")
 }
 
 kotlin {
@@ -30,6 +31,9 @@ kotlin {
         androidMain.dependencies {
             implementation(libs.compose.ui.tooling.preview)
             implementation(libs.androidx.activity.compose)
+            //noinspection UseTomlInstead
+            implementation ("io.ktor:ktor-client-android")
+            implementation(libs.androidx.navigation.compose)
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -50,7 +54,7 @@ kotlin {
 
             implementation(libs.slf4j.api)
             implementation(libs.gson)
-            implementation(libs.androidx.navigation.compose)
+
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
@@ -89,6 +93,9 @@ android {
     }
     dependencies {
         debugImplementation(libs.compose.ui.tooling)
+        //noinspection UseTomlInstead
+        implementation ("io.ktor:ktor-client-android")
+        implementation(libs.androidx.navigation.compose)
     }
 }
 
