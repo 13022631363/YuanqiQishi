@@ -1,4 +1,4 @@
-package org.dev.http.bean
+package org.dev.http.bean.loginAccount
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

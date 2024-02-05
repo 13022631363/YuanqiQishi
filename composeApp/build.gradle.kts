@@ -55,6 +55,9 @@ kotlin {
             implementation(libs.slf4j.api)
             implementation(libs.gson)
 
+            //noinspection UseTomlInstead
+            implementation("io.ktor:ktor-client-encoding")
+
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)

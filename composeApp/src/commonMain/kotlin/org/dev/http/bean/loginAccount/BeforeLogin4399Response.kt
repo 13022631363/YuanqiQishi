@@ -1,12 +1,12 @@
-package org.dev.http.bean
+package org.dev.http.bean.loginAccount
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class ResponseStatus (
+data class BeforeLogin4399Response (
     val code: String,
     @SerialName("result")
-    var textContent: String,
-    var message: String,
+    val textContent: String,
+    val message: String,
     val backup: String)

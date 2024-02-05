@@ -1,16 +1,19 @@
 package org.dev.http
 
 import io.ktor.client.*
+import io.ktor.client.call.*
 import io.ktor.client.engine.cio.*
+import io.ktor.client.plugins.compression.*
 import io.ktor.client.request.*
 import io.ktor.client.request.forms.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
-import org.dev.http.bean.ResponseStatus
+import io.ktor.util.reflect.*
+import org.dev.http.bean.loginAccount.BeforeLogin4399Response
 import org.dev.http.util.decodeFromString
 import org.dev.http.util.encodeToString
+import java.nio.charset.Charset
 
-val client = HttpClient (CIO)
 
 var authorization = ""
 
@@ -23,7 +26,16 @@ var character = ""
  */
 suspend inline fun <reified B: Any, reified FR: Any, reified SR: Any> post(url: String, body: B): Any
 {
-    val response = client.request {
+
+    val httpClient = HttpClient(CIO) {
+        install(ContentEncoding) {
+            deflate(1.0F)
+            gzip(0.9F)
+        }
+    }
+
+
+    val response = httpClient.request {
         method = HttpMethod.Post
         url(url)
         setBody(body.encodeToString())
@@ -41,6 +53,7 @@ suspend inline fun <reified B: Any, reified FR: Any, reified SR: Any> post(url: 
             append("Accept-Language", "zh-Hans-CN,  zh-CN")
             append("x-delivery-platform", "origin_taptap")
             append("Accept", "application/json")
+            append("Accept-Charset", "utf-8")
             append("Host", "api.soulknight-prequel.chillyroom.com")
 
             if (authorization != "")
@@ -49,10 +62,15 @@ suspend inline fun <reified B: Any, reified FR: Any, reified SR: Any> post(url: 
                 append("x-character-id", character)
         }
     }
-    println(response.bodyAsText())
+
+    httpClient.close()
+
     return if (response.status == HttpStatusCode.OK)
         response.cast<SR>()
     else response.cast<FR>()
+
+
+
 }
 
 
@@ -60,9 +78,16 @@ suspend inline fun <reified B: Any, reified FR: Any, reified SR: Any> post(url: 
  * 登陆 4399 的第一步骤
  * 1. 获取到重定向中的 state 参数
  */
-suspend fun login4399 (username: String, password: String, state: String): ResponseStatus
+suspend fun login4399 (username: String, password: String, state: String): BeforeLogin4399Response
 {
-    val firstResponse = client.submitForm(
+    val httpClient = HttpClient(CIO) {
+        install(ContentEncoding) {
+            deflate(1.0F)
+            gzip(0.9F)
+        }
+    }
+
+    val firstResponse = httpClient.submitForm(
         "https://ptlogin.4399.com/oauth2/loginAndAuthorize.do",
         formParameters = parameters {
             append("username", username)
@@ -72,10 +97,10 @@ suspend fun login4399 (username: String, password: String, state: String): Respo
             append("state", state)
 
         }
-    ){
-    }
+    )
 
-    val redirectResponse = client.submitForm  (
+
+    val redirectResponse = httpClient.submitForm  (
         url = "https://m.4399api.com/openapi/oauth-callback.html",
         encodeInQuery = true,
         formParameters = parameters {
@@ -84,7 +109,7 @@ suspend fun login4399 (username: String, password: String, state: String): Respo
         }
     )
 
-    return redirectResponse.cast<ResponseStatus>()
+    return redirectResponse.cast<BeforeLogin4399Response>()
 }
 
 /**
