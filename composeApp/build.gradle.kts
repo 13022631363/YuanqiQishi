@@ -34,6 +34,7 @@ kotlin {
             //noinspection UseTomlInstead
             implementation ("io.ktor:ktor-client-android")
             implementation(libs.androidx.navigation.compose)
+
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -55,12 +56,15 @@ kotlin {
             implementation(libs.slf4j.api)
             implementation(libs.gson)
 
+            implementation(libs.kotlinx.coroutines.core)
+            implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android")
             //noinspection UseTomlInstead
             implementation("io.ktor:ktor-client-encoding")
 
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
+
         }
     }
 }

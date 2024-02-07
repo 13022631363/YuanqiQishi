@@ -24,7 +24,7 @@ var character = ""
 /**
  * @介绍 基础 post 请求
  */
-suspend inline fun <reified B: Any, reified FR: Any, reified SR: Any> post(url: String, body: B): Any
+suspend inline fun <reified B: Any, reified FR: Any, reified SR: Any> post(url: String, body: B?): Any
 {
 
     val httpClient = HttpClient(CIO) {
@@ -38,7 +38,10 @@ suspend inline fun <reified B: Any, reified FR: Any, reified SR: Any> post(url: 
     val response = httpClient.request {
         method = HttpMethod.Post
         url(url)
-        setBody(body.encodeToString())
+        body?.let {
+            setBody(body.encodeToString())
+        }
+
         println(body.encodeToString())
         headers.apply {
             append("x-distro-id", currentServerType.uuid)

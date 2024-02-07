@@ -15,6 +15,7 @@ compose-plugin = "1.5.12"
 gson = "2.10.1"
 junit = "4.13.2"
 kotlin = "1.9.22"
+kotlinxCoroutinesCore = "1.8.0-RC2"
 kotlinxDatetime = "0.4.1"
 kotlinxSerializationJson = "1.6.2"
 navigationCompose = "2.7.6"
@@ -35,6 +36,7 @@ androidx-constraintlayout = { group = "androidx.constraintlayout", name = "const
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activityCompose" }
 compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "compose" }
 compose-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview", version.ref = "compose" }
+kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutinesCore" }
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinxDatetime" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
 slf4j-api = { module = "org.slf4j:slf4j-api", version.ref = "slf4jApi" }

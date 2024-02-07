@@ -26,7 +26,9 @@ suspend fun getRoleList (success: (GetRoleSuccessResponse) -> Unit, fail: (GetRo
             }
             is GetRoleSuccessResponse -> {
                 publicRevision = response.gameData.revision.toInt()
+                character = response.characters[0].basic.id //todo 暂时
                 success(response)
+
             }
         }
 

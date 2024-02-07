@@ -11,10 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.*
-import org.dev.http.getRoleList
-import org.dev.http.login
-import org.dev.http.post
-import org.dev.http.publicRevision
+import org.dev.http.*
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import kotlin.coroutines.coroutineContext
 
@@ -32,7 +29,7 @@ fun App() {
                 modifier = Modifier.size(120.dp)
                     .clickable {
 
-                        CoroutineScope(Dispatchers.Main).launch {
+                        CoroutineScope(Dispatchers.Default).launch {
                             login(success = {
                                 println("成功")
 
@@ -49,6 +46,15 @@ fun App() {
                                 println(it.message)
 
                             })
+
+                            getRoleInfo(success = {
+                                println(it.revision)
+                            }, fail = {
+                                println(it.message)
+                                println(it.errorCode)
+                                println(it.ok)
+                                println(authorization)
+                            } )
                         }
                 },
                 imageVector = Icons.Default.Email,
