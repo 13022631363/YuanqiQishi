@@ -3,6 +3,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -22,9 +23,9 @@ fun App() {
     var color by remember { mutableStateOf(Color.White) }
     var loginStatus by remember { mutableStateOf("") }
     MaterialTheme {
-        Box (modifier = Modifier.background(if (isSystemInDarkTheme()) Color.Black else Color.Green)
-            .fillMaxWidth().fillMaxHeight(0.5f),
-            contentAlignment = Alignment.BottomCenter){
+        Box (modifier = Modifier.background(if (isSystemInDarkTheme()) Color.Black else Color.White)
+            .fillMaxSize(),
+            contentAlignment = Alignment.Center){
             Icon(
                 modifier = Modifier.size(120.dp)
                     .clickable {
@@ -61,7 +62,22 @@ fun App() {
                 contentDescription =  null,
                 tint = color
             )
-            Text (loginStatus, color = Color.White)
+
+            Icon(
+                modifier = Modifier.size(120.dp).padding(top = 100.dp)
+                    .clickable {
+
+                        CoroutineScope(Dispatchers.Default).launch {
+                            castCoins(CastCoinsType.CastCoins10w) {
+                                println(it.gold)
+                            }
+                        }
+                    },
+                imageVector = Icons.Default.Add,
+                contentDescription =  null,
+                tint = color
+            )
+
         }
 
     }

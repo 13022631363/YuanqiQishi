@@ -3,7 +3,7 @@ package org.dev.http.bean.getRoleList
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class GetRoleSuccessResponse(
+data class GetRoleListSuccessResponse(
     val characters: List<BasicMsg>,
     val gameData: PublicRevision
 ){
@@ -28,7 +28,7 @@ data class GetRoleSuccessResponse(
 }
 
 @Serializable
-data class GetRoleFailResponse (
+data class GetRoleListFailResponse (
     val ok: Boolean,
     val errorCode: Int,
     val message: String,

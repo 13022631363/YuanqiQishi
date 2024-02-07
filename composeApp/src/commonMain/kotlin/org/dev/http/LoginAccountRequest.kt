@@ -11,6 +11,9 @@ val loginBody = CommonLoginRequestBody ()
 //公共版本 用于将物品存入仓库
 var publicRevision = -1
 
+/**
+ * 登陆请求
+ */
 suspend fun login (success: (SuccessLoginResponse) -> Unit, fail: (FailLoginResponse) -> Unit)
 {
 

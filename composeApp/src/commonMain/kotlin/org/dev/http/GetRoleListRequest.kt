@@ -1,19 +1,18 @@
 package org.dev.http
 
-import org.dev.http.bean.getRoleList.GetRoleFailResponse
+import org.dev.http.bean.getRoleList.GetRoleListFailResponse
 import org.dev.http.bean.getRoleList.GetRoleListRequestBody
-import org.dev.http.bean.getRoleList.GetRoleSuccessResponse
+import org.dev.http.bean.getRoleList.GetRoleListSuccessResponse
 
 /**
  * 获取角色列表请求
- * //todo 后续可能从这里获取更多角色当前信息
  */
-suspend fun getRoleList (success: (GetRoleSuccessResponse) -> Unit, fail: (GetRoleFailResponse) -> Unit)
+suspend fun getRoleList (success: (GetRoleListSuccessResponse) -> Unit, fail: (GetRoleListFailResponse) -> Unit)
 {
     val body = GetRoleListRequestBody (480, false)
 
 
-        val  response = post<GetRoleListRequestBody, GetRoleFailResponse, GetRoleSuccessResponse>(
+        val  response = post<GetRoleListRequestBody, GetRoleListFailResponse, GetRoleListSuccessResponse>(
             "https://api.soulknight-prequel.chillyroom.com/Character/FetchGameData",
             body
         )
@@ -21,10 +20,10 @@ suspend fun getRoleList (success: (GetRoleSuccessResponse) -> Unit, fail: (GetRo
 
 
         when (response) {
-            is GetRoleFailResponse -> {
+            is GetRoleListFailResponse -> {
                 fail(response)
             }
-            is GetRoleSuccessResponse -> {
+            is GetRoleListSuccessResponse -> {
                 publicRevision = response.gameData.revision.toInt()
                 character = response.characters[0].basic.id //todo 暂时
                 success(response)
