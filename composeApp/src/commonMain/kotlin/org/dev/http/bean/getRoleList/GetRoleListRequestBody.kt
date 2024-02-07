@@ -1,4 +1,4 @@
-package org.dev.http.bean.role
+package org.dev.http.bean.getRoleList
 
 import kotlinx.serialization.Serializable
 

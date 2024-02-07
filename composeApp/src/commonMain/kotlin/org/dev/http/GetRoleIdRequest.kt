@@ -1,8 +1,8 @@
 package org.dev.http
 
-import org.dev.http.bean.role.GetRoleFailResponse
-import org.dev.http.bean.role.GetRoleListRequestBody
-import org.dev.http.bean.role.GetRoleSuccessResponse
+import org.dev.http.bean.getRoleList.GetRoleFailResponse
+import org.dev.http.bean.getRoleList.GetRoleListRequestBody
+import org.dev.http.bean.getRoleList.GetRoleSuccessResponse
 
 /**
  * 获取角色列表请求
