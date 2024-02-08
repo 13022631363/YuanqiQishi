@@ -8,7 +8,7 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 data class CommonLoginRequestBody(
-    var loginType: String = "",
-    var account: String = "",
-    var password: String = ""
+    val loginType: String = "",
+    val account: String = "",
+    val password: String = ""
 )

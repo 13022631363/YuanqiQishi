@@ -20,7 +20,7 @@ import kotlin.coroutines.coroutineContext
 @Composable
 fun App() {
     val scope = rememberCoroutineScope()
-    var color by remember { mutableStateOf(Color.White) }
+    var color by remember { mutableStateOf(Color.Black) }
     var loginStatus by remember { mutableStateOf("") }
     MaterialTheme {
         Box (modifier = Modifier.background(if (isSystemInDarkTheme()) Color.Black else Color.White)
@@ -66,12 +66,19 @@ fun App() {
             Icon(
                 modifier = Modifier.size(120.dp).padding(top = 100.dp)
                     .clickable {
-
-                        CoroutineScope(Dispatchers.Default).launch {
-                            castCoins(CastCoinsType.CastCoins10w) {
-                                println(it.gold)
-                            }
-                        }
+                            //刷金币
+//                        CoroutineScope(Dispatchers.Default).launch {
+//                            castCoins(CastCoinsType.CastCoins10w) {
+//                                println(it.gold)
+//                            }
+//                        }
+                          CoroutineScope (Dispatchers.Main).launch {
+                              sceneEnter(SceneEnterLevelType.Common, SceneAreaType.LU_WEI_SHI_DI,
+                                  success = {
+                                      it
+                                  },
+                                  fail = ::println)
+                          }
                     },
                 imageVector = Icons.Default.Add,
                 contentDescription =  null,

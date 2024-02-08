@@ -6,8 +6,6 @@ import org.dev.http.bean.loginAccount.SuccessLoginResponse
 
 var currentServerType = ServerType.IOS
 
-val loginBody = CommonLoginRequestBody ()
-
 //公共版本 用于将物品存入仓库
 var publicRevision = -1
 
@@ -17,9 +15,7 @@ var publicRevision = -1
 suspend fun login (success: (SuccessLoginResponse) -> Unit, fail: (FailLoginResponse) -> Unit)
 {
 
-    loginBody.account = "18575520578"
-    loginBody.password = "zdjjs123"
-    loginBody.loginType = "phone"
+    val loginBody = CommonLoginRequestBody (account = "18575520578", password = "zdjjs123", loginType = "phone" )
 
     val response =
         post<CommonLoginRequestBody, FailLoginResponse, SuccessLoginResponse>(url = "https://api.soulknight-prequel.chillyroom.com/UserAuth/Login",
