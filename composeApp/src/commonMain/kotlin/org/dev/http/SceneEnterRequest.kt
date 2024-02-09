@@ -2,19 +2,19 @@ package org.dev.http
 
 import org.dev.http.bean.sceneEnter.SceneEnterRequestBody
 import org.dev.http.bean.sceneEnter.SceneEnterResponse
+import java.util.Random
 
 /**
  * 进入地图请求
  */
-suspend fun sceneEnter (sceneLevelType: SceneEnterLevelType,  sceneAreaType: SceneAreaType, layer: Int = 5, success: (SceneEnterResponse) -> Unit, fail: (String) -> Unit)
+suspend fun sceneEnter (sceneLevelType: SceneEnterLevelType,  sceneAreaType: SceneAreaType, layer: Int = 5, success: (SceneEnterResponse) -> Unit)
 {
     val body = SceneEnterRequestBody (sceneLevelType.level, sceneAreaType.areaValue, layer)
 
     val response = post<SceneEnterRequestBody, SceneEnterResponse, SceneEnterResponse>(url = "https://api.soulknight-prequel.chillyroom.com/Scene/SceneEnter",
-        body = body) as? SceneEnterResponse
+        body = body) as SceneEnterResponse
 
-    response ?: fail ("进入地图失败 具体原因需 debug")
-    response?.let(success)
+    response.let(success)
 }
 
 /**
@@ -54,4 +54,11 @@ enum class SceneAreaType (val areaName: String, val areaValue: Int)
     CHANG_CHENG_YI_JI ("长城遗迹", 37),
     SHEN_MI_SHAN_MAI ("神秘山脉", 38);
 
+    companion object
+    {
+        fun random (): SceneAreaType
+        {
+            return SceneAreaType.entries.random()
+        }
+    }
 }

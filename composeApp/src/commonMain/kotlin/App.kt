@@ -72,13 +72,16 @@ fun App() {
 //                                println(it.gold)
 //                            }
 //                        }
-                          CoroutineScope (Dispatchers.Main).launch {
-                              sceneEnter(SceneEnterLevelType.Common, SceneAreaType.LU_WEI_SHI_DI,
-                                  success = {
-                                      it
-                                  },
-                                  fail = ::println)
-                          }
+                               //进入地图
+//                          CoroutineScope (Dispatchers.Main).launch {
+//                              sceneEnter(SceneEnterLevelType.Common, SceneAreaType.LU_WEI_SHI_DI,
+//                                  success = {
+//                                      it
+//                                  })
+//                          }
+                            CoroutineScope (Dispatchers.Main).launch {
+                                getCard (2, org.dev.http.bean.getItem.Card("野猪王", "E01_B02"))
+                            }
                     },
                 imageVector = Icons.Default.Add,
                 contentDescription =  null,
