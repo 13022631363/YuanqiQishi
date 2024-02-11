@@ -21,9 +21,8 @@ data class GetItemRequestBody(
     ){
 
         @Serializable
-         class ItemInfo (
+         data class ItemInfo (
             val id: String,
-            val itemId: String,
             val owner: String,
             val type: Int,
             val rate: Int,
@@ -31,9 +30,12 @@ data class GetItemRequestBody(
             val payMethod: Int,
             val price: Int,
             val season: Int,
-            @SerialName ("dict_nested")
-            val dictNested: ItemId
         ){
+
+            lateinit var itemId: String
+
+            @SerialName ("dict_nested")
+            lateinit var dictNested: ItemId
              @Serializable
             sealed interface ItemId
             @Serializable
