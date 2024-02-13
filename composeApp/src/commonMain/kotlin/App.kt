@@ -14,6 +14,7 @@ import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.*
 import org.dev.http.*
 import org.dev.http.bean.getItem.Item
+import org.dev.http.bean.sceneEnter.SceneEnterResponse
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import kotlin.coroutines.coroutineContext
 
@@ -82,18 +83,8 @@ fun App() {
 //                                  })
 //                          }
                             //刷卡片
-//                            CoroutineScope (Dispatchers.Main).launch {
-//                                getCard (10, Item.Card("野猪王", "E01_B02"),
-//                                    success = {response, successAmount ->
-//                                        println("成功响应 -> $response")
-//                                        println("成功刷出的数量 -> $successAmount")
-//                                    },
-//                                    fail = {
-//                                        println(it.msg)
-//                                    })
-//                            }
                             CoroutineScope(Dispatchers.Main).launch {
-                                getCard(2, Item.Card("野猪王", "E01_B02"),
+                                getItemByType(2, Item.Card("野猪王", "E01_B02"),0,
                                     success = { response, successAmount ->
                                         println("成功响应 -> $response")
                                         println("成功刷出的数量 -> $successAmount")
@@ -111,35 +102,33 @@ fun App() {
                 Icon(
                     modifier = Modifier.size(120.dp).padding(top = 100.dp)
                         .clickable {
-                            //刷金币
-//                        CoroutineScope(Dispatchers.Default).launch {
-//                            castCoins(CastCoinsType.CastCoins10w) {
-//                                println(it.gold)
-//                            }
-//                        }
-                            //进入地图
-//                          CoroutineScope (Dispatchers.Main).launch {
-//                              sceneEnter(SceneEnterLevelType.Common, SceneAreaType.LU_WEI_SHI_DI,
-//                                  success = {
-//                                      it
-//                                  })
-//                          }
-                            //刷卡片
-//                            CoroutineScope (Dispatchers.Main).launch {
-//                                getCard (10, Item.Card("野猪王", "E01_B02"),
-//                                    success = {response, successAmount ->
-//                                        println("成功响应 -> $response")
-//                                        println("成功刷出的数量 -> $successAmount")
-//                                    },
-//                                    fail = {
-//                                        println(it.msg)
-//                                    })
-//                            }
+                            //刷羽毛
                             CoroutineScope (Dispatchers.Main).launch {
-                                getFeather (2, Item.Feather,
+                                getItemByType (2, Item.Feather,0,
                                     success = {response, successAmount ->
                                         println("成功响应 -> $response")
                                         println("成功刷出的数量 -> $successAmount")
+                                    },
+                                    fail = {
+                                        println(it.msg)
+                                    })
+                            }
+                        },
+                    imageVector = Icons.Default.Add,
+                    contentDescription =  null,
+                    tint = color
+                )
+                Icon(
+                    modifier = Modifier.size(120.dp).padding(top = 100.dp)
+                        .clickable {
+                            //刷装备
+                            CoroutineScope (Dispatchers.Main).launch {
+                                getEquipment(2, 0,SceneEnterResponse.EquipmentPools.EquipmentInfo.EquipMatchConditions(name= "WB_GS_EQB", equipBuffSuit = "EBFS_BOSS_EQB", quality = "1"),
+                                    sceneAreaType = SceneAreaType.NAN_BU_CAO_YUAN, sceneEnterLevelType = SceneEnterLevelType.Boss,
+                                    success = {response, successAmount, info ->
+                                        println("成功响应 -> $response")
+                                        println("成功刷出的数量 -> $successAmount")
+                                        println(info)
                                     },
                                     fail = {
                                         println(it.msg)

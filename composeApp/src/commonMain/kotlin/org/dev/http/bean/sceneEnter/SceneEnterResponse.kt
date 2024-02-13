@@ -1,6 +1,5 @@
 package org.dev.http.bean.sceneEnter
 
-import com.google.gson.internal.LinkedTreeMap
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -74,6 +73,33 @@ data class SceneEnterResponse(
                 @SerialName ("remake_equip_buffs")
                 val remakeEquipBuffs: String,
             )
+
+            data class EquipMatchConditions (
+                val name: String = "",
+                val equipBuffSuit: String = "",
+                val equipBuff0: String = "",
+                val equipBuff1: String = "",
+                val quality: String = ""
+            ){
+                fun isBlank (): Boolean
+                {
+                    return (name == "" && equipBuff0 == "" && equipBuff1 == "" && equipBuffSuit == "" && quality == "")
+                }
+
+                fun filterConditions (): Map<String, String>
+                {
+                    val result = mutableMapOf<String, String>()
+                    val fields = this::class.java.declaredFields
+                    fields.forEach {
+                        it.isAccessible = true
+                        val value = it.get(this)
+                        if (value is String)
+                            if (value != "")
+                                result[it.name] = value
+                    }
+                    return result
+                }
+            }
         }
 
     }

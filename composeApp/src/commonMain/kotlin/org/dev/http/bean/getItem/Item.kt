@@ -3,10 +3,23 @@ package org.dev.http.bean.getItem
 import org.dev.http.util.decodeFromString
 
 sealed class Item{
+
+    abstract val itemInfo: GetItemRequestBody.Settlement.ItemInfo
     data class Card(
         val cardName: String,
-        val id: String
-    ){
+        val id: String,
+    ): Item() {
+        override val itemInfo: GetItemRequestBody.Settlement.ItemInfo by lazy {
+             GetItemRequestBody.Settlement.ItemInfo (
+                id = "CARD",
+                owner = "00000000-0000-0000-0000-000000000000",
+                type = 128,
+                rate = 0,
+                payMethod = 3,
+                price = 0,
+                season = 0,
+            )
+        }
         companion object
         {
             private val npcJson = "{\n" +
@@ -259,16 +272,6 @@ sealed class Item{
                 Card (it.key, it.value)
             }
 
-            val cardItemInfo =  GetItemRequestBody.Settlement.ItemInfo (
-                id = "CARD",
-                owner = "00000000-0000-0000-0000-000000000000",
-                type = 128,
-                rate = 0,
-                payMethod = 3,
-                price = 0,
-                season = 0,
-            )
-
 
         }
     }
@@ -276,8 +279,8 @@ sealed class Item{
 
     data class Stone(
         val chineseName: String,
-        var itemInfo: GetItemRequestBody.Settlement.ItemInfo
-    ) {
+        override var itemInfo: GetItemRequestBody.Settlement.ItemInfo
+    ): Item() {
 
         companion object
         {
@@ -330,11 +333,11 @@ sealed class Item{
         }
     }
 
-    data object Feather {
+    data object Feather : Item(){
         val name = "瓦尔基里之羽毛"
         val typeName = "Feather"
         val jewelType = "Feather"
-        val itemInfo: GetItemRequestBody.Settlement.ItemInfo by lazy {
+        override val itemInfo: GetItemRequestBody.Settlement.ItemInfo by lazy {
             val itemInfo = GetItemRequestBody.Settlement.ItemInfo (
                 id = typeName,
                 owner = "00000000-0000-0000-0000-000000000000",

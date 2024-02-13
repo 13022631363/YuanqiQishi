@@ -1,5 +1,6 @@
 package org.dev.http
 
+import kotlinx.coroutines.delay
 import org.dev.http.bean.sceneEnter.SceneEnterRequestBody
 import org.dev.http.bean.sceneEnter.SceneEnterResponse
 import java.util.Random
@@ -7,8 +8,10 @@ import java.util.Random
 /**
  * 进入地图请求
  */
-suspend fun sceneEnter (sceneLevelType: SceneEnterLevelType,  sceneAreaType: SceneAreaType, layer: Int = 5, success: (SceneEnterResponse) -> Unit)
+suspend fun sceneEnter (sceneLevelType: SceneEnterLevelType,  sceneAreaType: SceneAreaType, layer: Int = 5, delay: Long, success: (SceneEnterResponse) -> Unit)
 {
+    delay(delay)
+
     val body = SceneEnterRequestBody (sceneLevelType.level, sceneAreaType.areaValue, layer)
 
     val response = post<SceneEnterRequestBody, SceneEnterResponse, SceneEnterResponse>(url = "https://api.soulknight-prequel.chillyroom.com/Scene/SceneEnter",

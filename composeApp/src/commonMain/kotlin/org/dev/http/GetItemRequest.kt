@@ -1,50 +1,23 @@
 package org.dev.http
 
-
-import org.dev.http.bean.getItem.GetItemFailResponse
-import org.dev.http.bean.getItem.GetItemRequestBody
-import org.dev.http.bean.getItem.GetItemSuccessResponse
-import org.dev.http.bean.getItem.Item
+import org.dev.http.bean.getItem.*
 import org.dev.http.bean.sceneEnter.SceneEnterResponse
 import org.dev.http.util.randomNumber
 import kotlin.math.absoluteValue
 
 /**
- * 刷卡片请求
- */
-suspend fun getCard (amount: Int, card: Item.Card, success: (GetItemSuccessResponse, Int) -> Unit, fail: (GetItemFailResponse) -> Unit ) {
-
-   sameCount(amount,
-       sceneEnterSuccess = (SceneEnterResponse::cardPool),
-       itemInfoBuild = { cardUUID ->
-           val cardItemInfoCopy = Item.Card.cardItemInfo.copy()
-           cardItemInfoCopy.itemId = cardUUID
-           cardItemInfoCopy.dictNested = GetItemRequestBody.Settlement.ItemInfo.CardID (card.id)
-
-           cardItemInfoCopy
-       },
-       everySuccessfulAcquisition = { response, successAmount ->
-            success (response, successAmount)
-       },
-       ifFailure = { response, isEnd ->
-           isEnd (true)
-           fail (response)
-       })
-
-}
-
-/**
  * @param targetAmount 目标数量
- * @param sceneEnterSuccess 如果进入地图请求成功 就应从提供的请求体中指定具体哪种物品的 uuid 集合
- * @param itemInfoBuild 提供单个 itemUUID 构建 ItemInfo 刷物品需要
- * @param everySuccessfulAcquisition 如果成功刷出 提供刷新的数量和响应体来处理后续逻辑
- * @param ifFailure 如果失败 可能出现的情况是卡片失效 提供失败响应体和是否要结束设置函数 来处理后续逻辑
+ * @param sceneEnterSuccess 如果进入地图请求成功 回调函数提供 1.进入地图响应体 需返回一个 uuid 集合
+ * @param itemInfoBuild 回调函数提供 1.上面 uuid 集合的每个 uuid  需返回一个构建好的 itemInfo
+ * @param everySuccessfulAcquisition 如果成功刷出 回调函数提供 1.响应体来处理后续逻辑 2.刷新的数量
+ * @param ifFailure 如果失败 可能出现的情况是卡片失效 回调函数提供 1.失败响应体 来处理后续逻辑
  */
 private suspend fun sameCount (targetAmount: Int,
+                               delay: Long,
                                sceneEnterSuccess: (SceneEnterResponse) -> List<String>,
                                itemInfoBuild: (String) -> GetItemRequestBody.Settlement.ItemInfo,
                                everySuccessfulAcquisition: (GetItemSuccessResponse, Int) -> Unit,
-                               ifFailure: (GetItemFailResponse, (Boolean) -> Unit) -> Unit)
+                               ifFailure: (GetItemFailResponse) -> Unit)
 {
     var currentTotalAmount = 0
 
@@ -56,8 +29,9 @@ private suspend fun sameCount (targetAmount: Int,
 
 
         //发送进入请求并获取卡片集
-        sceneEnter(SceneEnterLevelType.Boss,
-            randomSceneAreaType,
+        sceneEnter(sceneLevelType = SceneEnterLevelType.Boss,
+            sceneAreaType = randomSceneAreaType,
+            delay = delay,
             success = {
                 itemUUID.addAll (sceneEnterSuccess (it))
                 currentTotalAmount += itemUUID.size
@@ -96,64 +70,169 @@ private suspend fun sameCount (targetAmount: Int,
                 everySuccessfulAcquisition (it, body.guids.size)
             },
             fail = {
-                ifFailure (it){isEnd ->
-                    if (isEnd)
-                        remainAmount = 0
+                ifFailure (it)
+                remainAmount = 0
             }
-        })
+        )
         if (remainAmount == 0) return
     }
 }
 
-suspend fun getStone (amount: Int, stone: Item.Stone,  success: (GetItemSuccessResponse, Int) -> Unit, fail: (GetItemFailResponse) -> Unit)
+/**
+ * @param amount 数量
+ * @param item 指定的物品
+ * @param delay 延迟
+ * @param success 如果成功 回调函数持有 1.物品获取成功的响应体 2.成功获取的数量
+ * @param fail 如果失败 回调函数持有 1.物品获取失败响应体
+ */
+suspend fun getItemByType  (amount: Int, item: Item, delay: Long, success: (GetItemSuccessResponse, Int) -> Unit, fail: (GetItemFailResponse) -> Unit)
 {
-    sameCount(amount,
-        sceneEnterSuccess = SceneEnterResponse::genericItems,
-        itemInfoBuild = {stoneId ->
-            val itemInfoCopy = stone.itemInfo.copy()
+    sameCount(amount, delay,
+        sceneEnterSuccess = {
+            when (item)
+            {
+                is Item.Card -> it.cardPool
+                is Item.Feather -> it.genericItems
+                is Item.Stone -> it.genericItems
+            }
+        },
+        itemInfoBuild = {id ->
+            val itemInfoCopy = item.itemInfo.copy()
             //由于data class ItemInfo未在主构造器中持有 dictNested 字段 所以 copy 并不包含此字段
-            itemInfoCopy.itemId = stoneId
-            itemInfoCopy.dictNested = stone.itemInfo.dictNested
+            itemInfoCopy.itemId = id
+            itemInfoCopy.dictNested  = if (item is Item.Card)
+                GetItemRequestBody.Settlement.ItemInfo.CardID (item.id)
+            else
+                item.itemInfo.dictNested
+
             itemInfoCopy
         },
         everySuccessfulAcquisition = {response, successAmount ->
             success (response, successAmount)
         },
-        ifFailure = { response, isEnd ->
-            isEnd (true)
+        ifFailure = { response ->
             fail (response)
         })
 }
 
-suspend fun getFeather (amount: Int, feather: Item.Feather,  success: (GetItemSuccessResponse, Int) -> Unit, fail: (GetItemFailResponse) -> Unit)
+/**
+ * 根据条件获取对应满足条件的装备
+ * @param amount 数量
+ * @param delay 延迟
+ * @param conditions 条件
+ * @param success 如果成功获取装备 回调函数持有 1.物品获取成功的响应体 2.成功刷出装备数 3.刷出的装备信息
+ * @param fail 如果失败 回调函数持有 1.物品获取失败的响应体
+ * @param sceneAreaType 地图选择
+ * @param sceneEnterLevelType 地图等级选择
+ */
+suspend fun getEquipment (amount: Int, delay: Long, conditions: SceneEnterResponse.EquipmentPools.EquipmentInfo.EquipMatchConditions, sceneAreaType: SceneAreaType, sceneEnterLevelType: SceneEnterLevelType,  success: (response: GetItemSuccessResponse, successNumber:Int, matchedEquip: SceneEnterResponse.EquipmentPools.EquipmentInfo) -> Unit, fail: (GetItemFailResponse) -> Unit)
 {
-    sameCount(amount,
-        sceneEnterSuccess = SceneEnterResponse::genericItems,
-        itemInfoBuild = {stoneId ->
-            val itemInfoCopy = feather.itemInfo.copy()
-            //由于data class ItemInfo未在主构造器中持有 dictNested 字段 所以 copy 并不包含此字段
-            itemInfoCopy.itemId = stoneId
-            itemInfoCopy.dictNested = feather.itemInfo.dictNested
-            itemInfoCopy
-        },
-        everySuccessfulAcquisition = {response, successAmount ->
-            success (response, successAmount)
-        },
-        ifFailure = { response, isEnd ->
-            isEnd (true)
-            fail (response)
-        })
+    var currentAmount = 0
+    while (true)
+    {
+
+        if (currentAmount == amount) break
+        var matchedEquip: SceneEnterResponse.EquipmentPools.EquipmentInfo? = null
+
+        val equipmentInfos = mutableListOf<SceneEnterResponse.EquipmentPools.EquipmentInfo>()
+        sceneEnter(sceneEnterLevelType, sceneAreaType, 5, delay){
+            equipmentInfos.addAll(it.equipmentPools.specialDrop.values)
+            equipmentInfos.addAll(it.equipmentPools.low)
+            equipmentInfos.addAll(it.equipmentPools.medium)
+            equipmentInfos.addAll(it.equipmentPools.high)
+        }
+
+        for (info in equipmentInfos){
+            var sameNum = 0
+            var isSecondExchange = false
+            val filterConditions = conditions.filterConditions()
+            val dictNested = info.dictNested
+            for (condition in filterConditions){
+                if (condition.key == "name" )
+                {
+                    if (info.id == condition.value)
+                        sameNum++
+                    continue
+                }
+
+                val field = dictNested::class.java.getDeclaredField(condition.key)
+                field.isAccessible = true
+                if (field.get(dictNested) == condition.value)
+                    sameNum++
+                else {
+
+                    if (condition.key == "equipBuff0")
+                    {
+                        val field1 = dictNested::class.java.getDeclaredField("equipBuff1")
+                        field1.isAccessible = true
+                        if (field1.get(dictNested) == condition.value)
+                        {
+                            sameNum++
+                            isSecondExchange = true
+                        }
+                    }
+                    if (condition.key == "equipBuff1" && isSecondExchange)
+                    {
+                        val field0 = dictNested::class.java.getDeclaredField("equipBuff0")
+                        field0.isAccessible = true
+                        if (field0.get(dictNested) == condition.value)
+                            sameNum++
+                    }
+                }
+            }
+            if (filterConditions.size == sameNum)
+            {
+                matchedEquip = info
+                break
+            }
+        }
+
+        matchedEquip?.let {info ->
+            currentAmount++
+            //获取装备
+            var revision = ""
+            getRoleInfo(success = {
+                revision = it.revision
+            }, fail = {})
+            getEquip(
+                GetEquipRequestBody(
+                guids = listOf(info.itemId),
+                revision = revision,
+                    currencies = emptyList(),
+                    secretKey = randomNumber,
+                    secretKey2 = randomNumber / 2.2
+                ),
+                success = {response ->
+                    success (response, 1, info) },
+                fail = {
+                    fail (it)
+                }
+            )
+        }
+    }
 }
 
-suspend fun getEquipment ()
-{
-
-}
-
+/**
+ * 获取物品请求
+ */
 suspend fun getItem (body: GetItemRequestBody, success: (GetItemSuccessResponse) -> Unit, fail: (GetItemFailResponse) -> Unit)
 {
     val response = post<GetItemRequestBody, GetItemFailResponse, GetItemSuccessResponse>(url = "https://api.soulknight-prequel.chillyroom.com/Package/AddV8868",
         body = body)
+
+    when (response)
+    {
+        is GetItemSuccessResponse -> response.apply (success)
+        is GetItemFailResponse -> response.apply(fail)
+    }
+}
+
+/**
+ * 获取装备请求
+ */
+suspend fun getEquip (body: GetEquipRequestBody, success: (GetItemSuccessResponse) -> Unit, fail: (GetItemFailResponse) -> Unit)
+{
+    val response = post<GetEquipRequestBody, GetItemFailResponse, GetItemSuccessResponse>(url = "https://api.soulknight-prequel.chillyroom.com/Package/AddV8868", body)
 
     when (response)
     {
