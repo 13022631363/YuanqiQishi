@@ -269,17 +269,15 @@ sealed class Item{
                     "    \"瓦克恩\":\"E16_S08\"\n" +
                     "}"
 
-            val npc = npcJson.decodeFromString<Map<String, String>>().map {
+            private val npc = npcJson.decodeFromString<Map<String, String>>().map {
                 Card (it.key, it.value)
             }
-            val boss = bossJson.decodeFromString<Map<String, String>>().map {
+            private val boss = bossJson.decodeFromString<Map<String, String>>().map {
                 Card (it.key, it.value)
             }
-            val monster = monsterJson.decodeFromString<Map<String, String>>().map {
+            private val monster = monsterJson.decodeFromString<Map<String, String>>().map {
                 Card (it.key, it.value)
             }
-
-
         }
     }
 
@@ -289,9 +287,13 @@ sealed class Item{
         override var itemInfo: GetItemRequestBody.Settlement.ItemInfo
     ): Item() {
 
+        enum class Type (val chineseName: String, val stone: Stone)
+        {
+            UpgradeStone ("磨炼石", upgradeStone()), WindRemakeStone ("风化石", windRemakeStone ()),FireRemakeStone ("火山石", fireRemakeStone())
+        }
         companion object
         {
-            fun upgradeStone (): Stone
+            private fun upgradeStone (): Stone
             {
                 val itemInfo = GetItemRequestBody.Settlement.ItemInfo (
                     id = "JEWEL_003",
@@ -306,7 +308,7 @@ sealed class Item{
                 return Stone ("磨炼石",itemInfo)
             }
 
-            fun windRemakeStone() : Stone
+            private fun windRemakeStone() : Stone
             {
                 val itemInfo = GetItemRequestBody.Settlement.ItemInfo (
                     id = "JEWEL_001",
@@ -322,7 +324,7 @@ sealed class Item{
                 return Stone ("风化石", itemInfo)
             }
 
-            fun fireRemakeStone (): Stone
+            private fun fireRemakeStone (): Stone
             {
                 val itemInfo = GetItemRequestBody.Settlement.ItemInfo (
                     id = "JEWEL_002",
