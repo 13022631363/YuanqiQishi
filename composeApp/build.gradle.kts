@@ -31,8 +31,7 @@ kotlin {
         androidMain.dependencies {
             implementation(libs.compose.ui.tooling.preview)
             implementation(libs.androidx.activity.compose)
-            //noinspection UseTomlInstead
-            implementation ("io.ktor:ktor-client-android")
+
             implementation(libs.androidx.navigation.compose)
 
         }
@@ -43,15 +42,19 @@ kotlin {
             implementation(compose.ui)
             @OptIn(ExperimentalComposeLibrary::class)
             implementation(compose.components.resources)
+            //noinspection UseTomlInstead
+            implementation("io.ktor:ktor-client-content-negotiation:2.3.8")
 
             //noinspection UseTomlInstead
-            implementation ("io.ktor:ktor-client-core")
+            implementation ("io.ktor:ktor-client-core:2.3.8")
             //noinspection UseTomlInstead
             implementation ("io.ktor:ktor-client-cio")
 
             implementation(libs.kotlinx.datetime)
 
-            implementation(libs.kotlinx.serialization.json)
+            implementation("io.ktor:ktor-serialization-kotlinx-json:2.3.8")
+
+            implementation("androidx.annotation:annotation:1.7.1")
 
             implementation(libs.slf4j.api)
             implementation(libs.gson)
@@ -100,8 +103,6 @@ android {
     }
     dependencies {
         debugImplementation(libs.compose.ui.tooling)
-        //noinspection UseTomlInstead
-        implementation ("io.ktor:ktor-client-android")
         implementation(libs.androidx.navigation.compose)
     }
 }

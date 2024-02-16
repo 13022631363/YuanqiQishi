@@ -1,17 +1,26 @@
 package org.dev.http
 
+import com.google.gson.Gson
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.engine.cio.*
 import io.ktor.client.plugins.compression.*
+import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
 import io.ktor.client.request.forms.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
+import io.ktor.serialization.kotlinx.*
+import io.ktor.serialization.kotlinx.json.*
 import io.ktor.util.reflect.*
+import kotlinx.serialization.json.Json
+import org.dev.http.LoginAccountRequest.currentServerType
 import org.dev.http.bean.loginAccount.BeforeLogin4399Response
-import org.dev.http.util.decodeFromString
-import org.dev.http.util.encodeToString
+import org.dev.http.bean.loginByCami.LoginByCamiFailResponse
+import org.dev.http.bean.loginByCami.LoginByCamiSuccessResponse
+import org.dev.http.util.JsonUtil.decodeFromString
+import org.dev.http.util.JsonUtil.encodeToString
+import org.dev.http.util.JsonUtil.json
 import java.nio.charset.Charset
 
 
@@ -71,9 +80,51 @@ suspend inline fun <reified B: Any, reified FR: Any, reified SR: Any> post(url: 
     return if (response.status == HttpStatusCode.OK)
         response.cast<SR>()
     else response.cast<FR>()
+}
+
+object BasePostRequest {
+    /**
+     * 表单提交的请求
+     */
+    suspend inline fun submitForm(parameters: Parameters, success :(LoginByCamiSuccessResponse) -> Unit, fail :(LoginByCamiFailResponse) -> Unit)
+    {
+        val httpClient = HttpClient (CIO){
+            install (ContentNegotiation){
+                register(
+                    ContentType.Text.Html, KotlinxSerializationConverter(
+                        Json {
+                            prettyPrint = true
+                            isLenient = true
+                            ignoreUnknownKeys = true
+                        }
+                    )
+                )
+            }
+            install(ContentEncoding) {
+                deflate(1.0F)
+                gzip(0.9F)
+            }
+        }
+
+        val response = httpClient.submitForm(
+            url = "http://w.t3yanzheng.com/EBF22FB8B0BF6F60",
+            formParameters = parameters,
+        ){
+            headers {
+                append("User-Agent", "Apifox/1.0.0 (https://apifox.com)")
+            }
+        }
+        val bodyAsText = response.bodyAsText()
+        val bodyJson = Gson ().fromJson(bodyAsText, Map::class.java)
+        if (bodyJson["code"] == "200")
+        {
+            success (Gson().fromJson(bodyAsText, LoginByCamiSuccessResponse::class.java))
+        }else {
+            fail (Gson().fromJson(bodyAsText, LoginByCamiFailResponse::class.java))
+        }
 
 
-
+    }
 }
 
 

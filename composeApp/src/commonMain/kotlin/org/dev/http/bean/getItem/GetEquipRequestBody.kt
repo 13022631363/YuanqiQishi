@@ -1,5 +1,6 @@
 package org.dev.http.bean.getItem
 
+import androidx.annotation.Keep
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 

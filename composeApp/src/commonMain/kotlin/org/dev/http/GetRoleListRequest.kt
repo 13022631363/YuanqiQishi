@@ -1,5 +1,6 @@
 package org.dev.http
 
+import org.dev.http.LoginAccountRequest.publicRevision
 import org.dev.http.bean.getRoleList.GetRoleListFailResponse
 import org.dev.http.bean.getRoleList.GetRoleListRequestBody
 import org.dev.http.bean.getRoleList.GetRoleListSuccessResponse

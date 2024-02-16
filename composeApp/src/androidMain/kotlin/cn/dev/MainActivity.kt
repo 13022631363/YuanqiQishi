@@ -1,6 +1,6 @@
 package cn.dev
 
-import App
+import org.dev.App
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent

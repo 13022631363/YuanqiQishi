@@ -1,6 +1,6 @@
 package org.dev.http.bean.getItem
 
-import org.dev.http.util.decodeFromString
+import org.dev.http.util.JsonUtil.decodeFromString
 
 sealed class Item{
 
