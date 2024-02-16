@@ -106,22 +106,25 @@ object BasePostRequest {
             }
         }
 
-        val response = httpClient.submitForm(
-            url = "http://w.t3yanzheng.com/EBF22FB8B0BF6F60",
-            formParameters = parameters,
-        ){
-            headers {
-                append("User-Agent", "Apifox/1.0.0 (https://apifox.com)")
+        kotlin.runCatching {
+            val response = httpClient.submitForm(
+                url = "http://w.t3yanzheng.com/EBF22FB8B0BF6F60",
+                formParameters = parameters,
+            ){
+                headers {
+                    append("User-Agent", "Apifox/1.0.0 (https://apifox.com)")
+                }
             }
-        }
-        val bodyAsText = response.bodyAsText()
-        val bodyJson = Gson ().fromJson(bodyAsText, Map::class.java)
-        if (bodyJson["code"] == "200")
-        {
-            success (Gson().fromJson(bodyAsText, LoginByCamiSuccessResponse::class.java))
-        }else {
-            fail (Gson().fromJson(bodyAsText, LoginByCamiFailResponse::class.java))
-        }
+            val bodyAsText = response.bodyAsText()
+            val bodyJson = Gson ().fromJson(bodyAsText, Map::class.java)
+            if (bodyJson["code"] == "200")
+            {
+                success (Gson().fromJson(bodyAsText, LoginByCamiSuccessResponse::class.java))
+            }else {
+                fail (Gson().fromJson(bodyAsText, LoginByCamiFailResponse::class.java))
+            }
+        }.onFailure (::println)
+
 
 
     }

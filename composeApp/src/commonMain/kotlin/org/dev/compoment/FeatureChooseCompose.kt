@@ -3,28 +3,10 @@ package org.dev.compoment
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.VerticalAlignmentLine
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontStyle
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.*
 import org.dev.compoment.Page.*
 import org.dev.compoment.bean.KeyInfo
@@ -150,15 +132,15 @@ fun NavigationRailSample() {
                     Crossfade(targetState = KeyInfo.checked, animationSpec = tween(700)) { checked ->
                         if (checked)
                         {
-                            User()
+                            UserComponse.UserComponse()
                         }
-                        else Cami(300.dp, 200.dp)
+                        else CamiCompose.CamiCompose(300.dp, 200.dp)
                     }
                 }
                 Money -> {
-                    Text("金币")
+                    MoneyCompose.MoneyCompose()
                 }
-                Card -> TODO()
+                Card -> CardCompose.CardCompose()
                 Stone -> TODO()
                 Feather -> TODO()
                 Equipment -> TODO()

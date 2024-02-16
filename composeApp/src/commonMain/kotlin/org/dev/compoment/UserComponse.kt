@@ -21,21 +21,24 @@ import org.jetbrains.compose.resources.painterResource
 
 
 
-@OptIn(ExperimentalResourceApi::class)
-@Composable
-fun User ()
+object UserComponse
 {
-    Surface (modifier = Modifier.fillMaxSize(), color = Color (229, 229, 229)){
-        Column (horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center) {
-            Image(
-                painter = painterResource("16.png"),
-                contentDescription = null,
-                modifier = Modifier.size(60.dp).clip(Shapes().small)
-            )
-            Text(User.id)
-            Text(User.endTime)
-            Text(User.amount)
+    @OptIn(ExperimentalResourceApi::class)
+    @Composable
+    fun UserComponse ()
+    {
+        Surface (modifier = Modifier.fillMaxSize(), color = Color (229, 229, 229)){
+            Column (horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center) {
+                Image(
+                    painter = painterResource("16.png"),
+                    contentDescription = null,
+                    modifier = Modifier.size(60.dp).clip(Shapes().small)
+                )
+                Text(User.id)
+                Text(User.endTime)
+                Text(User.amount)
+            }
         }
     }
 }

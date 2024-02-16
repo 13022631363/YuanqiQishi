@@ -20,6 +20,13 @@ sealed class Item{
                 season = 0,
             )
         }
+
+        enum class Type (val cards: List<Card>)
+        {
+            Boss (boss), Monster (monster), Npc (npc)
+
+        }
+
         companion object
         {
             private val npcJson = "{\n" +
