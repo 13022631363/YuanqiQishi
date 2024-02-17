@@ -125,7 +125,7 @@ object CardCompose{
                         }.onFailure {
                             amount = 1
                             enable = true
-                        }.onSuccess { enable = true }
+                        }.onSuccess { enable = (amount != 0)}
                     },
                     modifier = Modifier.size(120.dp, 55.dp),
                     singleLine = true

@@ -143,7 +143,7 @@ fun NavigationRailSample() {
                 Card -> CardCompose.CardCompose()
                 Stone -> StoneCompose.StoneCompose()
                 Feather -> FeatherCompose.FeatherCompose ()
-                Equipment -> TODO()
+                Equipment -> EquipmentCompose.EquipmentCompose()
                 Task -> TODO()
             }
         }

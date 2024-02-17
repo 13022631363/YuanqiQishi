@@ -37,7 +37,7 @@ enum class SceneAreaType (val areaName: String, val areaValue: Int)
     MO_FA_SHI_SHEN_DIAN ("魔法石神殿", 8),
     NAN_BU_CAO_YUAN ("南部草原", 9),
     LU_WEI_SHI_DI ("芦苇湿地", 10),
-    MI_WU_CAO_YUAN ("", 11),
+    MI_WU_CAO_YUAN ("迷雾草原", 11),
     CHAO_SHI_RONG_DONG ("潮湿溶洞", 12),
     SHUI_JING_DONG_KU ("水晶洞窟", 13),
     JI_JING_SHAN_GU ("寂静山谷", 14),
