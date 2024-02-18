@@ -24,9 +24,11 @@ import org.dev.compoment.task.TaskManager
 import org.dev.http.SceneAreaType
 import org.dev.http.SceneEnterLevelType
 import org.dev.http.bean.sceneEnter.SceneEnterResponse
+import org.jetbrains.compose.resources.ExperimentalResourceApi
 
 object TaskCompose
 {
+    @OptIn(ExperimentalResourceApi::class)
     @Composable
     fun TaskCompose ()
     {
@@ -56,16 +58,15 @@ object TaskCompose
                                         contentAlignment = Alignment.CenterStart
                                     ){
                                         Row {
+                                            val picturePath = when (it.state.value)
+                                            {
+                                                Running -> "loding.png"
+                                                Finish -> "success.png"
+                                                Error -> "error.png"
+                                                Wait -> "wait.png"
+                                            }
                                             Image(
-                                                painter = painterResource(
-                                                    when (it.state.value)
-                                                    {
-                                                        Running -> "loding.png"
-                                                        Finish -> "success.png"
-                                                        Error -> "error.png"
-                                                        Wait -> "wait.png"
-                                                    }
-                                                ),
+                                                painter = org.jetbrains.compose.resources.painterResource(picturePath),
                                                 contentDescription = null,
                                                 modifier = Modifier.size(40.dp).padding(start = 20.dp)
                                             )

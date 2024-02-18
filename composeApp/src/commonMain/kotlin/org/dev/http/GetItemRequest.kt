@@ -2,7 +2,8 @@ package org.dev.http
 
 import org.dev.http.bean.getItem.*
 import org.dev.http.bean.sceneEnter.SceneEnterResponse
-import org.dev.http.util.randomNumber
+import org.dev.http.util.NumberUtil
+
 import kotlin.math.absoluteValue
 
 object GetItemRequest
@@ -46,12 +47,12 @@ object GetItemRequest
                     SceneEnterLevelType.Boss.level,
                     emptyList<GetItemRequestBody.Settlement.ItemInfo>().toMutableList()),
                 revision = "",
-                secretKey = randomNumber,
-                secretKey2 = randomNumber / 2.2
+                secretKey = NumberUtil.randomNumber,
+                secretKey2 = NumberUtil.randomNumber / 2.2
             )
 
             body.guids.addAll(itemUUID)
-            getRoleInfo (success = {
+            GetRoleInfoRequest.getRoleInfo (success = {
                 body.revision = it.revision
             }, fail = {})
 
@@ -193,7 +194,7 @@ object GetItemRequest
                 currentAmount++
                 //获取装备
                 var revision = ""
-                getRoleInfo(success = {
+                GetRoleInfoRequest.getRoleInfo(success = {
                     revision = it.revision
                 }, fail = {})
                 getEquip(
@@ -201,8 +202,8 @@ object GetItemRequest
                         guids = listOf(info.itemId),
                         revision = revision,
                         currencies = emptyList(),
-                        secretKey = randomNumber,
-                        secretKey2 = randomNumber / 2.2
+                        secretKey = NumberUtil.randomNumber,
+                        secretKey2 = NumberUtil.randomNumber / 2.2
                     ),
                     success = {response ->
                         success (response, 1, info) },

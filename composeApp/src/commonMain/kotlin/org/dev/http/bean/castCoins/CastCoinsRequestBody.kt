@@ -9,7 +9,12 @@ import kotlinx.serialization.Serializable
 data class CastCoinsRequestBody(
     val golds: List<Int>,
     val cost: Int
-)
+){
+    companion object{
+        val castCoins10wRequestBody = CastCoinsRequestBody (castCoinsCountList(999, 118), 25)
+        val castCoins100wRequestBody = CastCoinsRequestBody (castCoinsCountList(20000, 41), 25)
+    }
+}
 
 private fun castCoinsCountList (single: Int, count: Int): List<Int>
 {
@@ -19,5 +24,3 @@ private fun castCoinsCountList (single: Int, count: Int): List<Int>
     return result
 }
 
-val castCoins10wRequestBody = CastCoinsRequestBody (castCoinsCountList(999, 118), 25)
-val castCoins100wRequestBody = CastCoinsRequestBody (castCoinsCountList(20000, 41), 25)
