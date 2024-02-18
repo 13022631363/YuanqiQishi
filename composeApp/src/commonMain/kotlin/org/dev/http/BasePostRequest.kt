@@ -14,6 +14,7 @@ import io.ktor.serialization.kotlinx.*
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.util.reflect.*
 import kotlinx.serialization.json.Json
+import org.dev.compoment.bean.GameUser
 import org.dev.http.LoginAccountRequest.currentServerType
 import org.dev.http.bean.loginAccount.BeforeLogin4399Response
 import org.dev.http.bean.loginByCami.LoginByCamiFailResponse
@@ -24,9 +25,7 @@ import org.dev.http.util.JsonUtil.json
 import java.nio.charset.Charset
 
 
-var authorization = ""
 
-var character = ""
 
 
 
@@ -68,10 +67,10 @@ suspend inline fun <reified B: Any, reified FR: Any, reified SR: Any> post(url: 
             append("Accept-Charset", "utf-8")
             append("Host", "api.soulknight-prequel.chillyroom.com")
 
-            if (authorization != "")
-                append("Authorization", "Bearer $authorization")
-            if (character != "")
-                append("x-character-id", character)
+            if (GameUser.authorization != "")
+                append("Authorization", "Bearer ${GameUser.authorization}")
+            if (GameUser.character != "")
+                append("x-character-id", GameUser.character)
         }
     }
 

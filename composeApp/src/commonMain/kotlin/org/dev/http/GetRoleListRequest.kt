@@ -1,5 +1,6 @@
 package org.dev.http
 
+import org.dev.compoment.bean.GameUser
 import org.dev.http.LoginAccountRequest.publicRevision
 import org.dev.http.bean.getRoleList.GetRoleListFailResponse
 import org.dev.http.bean.getRoleList.GetRoleListRequestBody
@@ -26,7 +27,6 @@ suspend fun getRoleList (success: (GetRoleListSuccessResponse) -> Unit, fail: (G
             }
             is GetRoleListSuccessResponse -> {
                 publicRevision = response.gameData.revision.toInt()
-                character = response.characters[0].basic.id //todo 暂时
                 success(response)
 
             }

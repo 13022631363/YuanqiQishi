@@ -6,10 +6,10 @@ import org.dev.http.bean.castCoins.castCoins100wRequestBody
 import org.dev.http.bean.castCoins.castCoins10wRequestBody
 
 
-enum class CastCoinsType (val castCoinsRequestBody: CastCoinsRequestBody)
+enum class CastCoinsType (val castCoinsRequestBody: CastCoinsRequestBody, val symbol: String)
 {
-    CastCoins10w (castCoins10wRequestBody),
-    CastCoins100w (castCoins100wRequestBody)
+    CastCoins10w (castCoins10wRequestBody, "10W"),
+    CastCoins100w (castCoins100wRequestBody, "100W")
 }
 
 /**

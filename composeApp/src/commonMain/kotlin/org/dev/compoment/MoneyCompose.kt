@@ -10,6 +10,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import org.dev.compoment.bean.MoneyTask
+import org.dev.compoment.task.TaskManager
+import org.dev.http.CastCoinsType
 
 object MoneyCompose{
     @Composable
@@ -26,7 +29,7 @@ object MoneyCompose{
 
                     Button (modifier = Modifier.size(150.dp, 50.dp),
                         onClick = {
-
+                            TaskManager.addTask(MoneyTask (1, CastCoinsType.CastCoins10w))
                         }
                     ){
                         Text("10W",
@@ -39,7 +42,7 @@ object MoneyCompose{
 
                     Button (modifier = Modifier.size(150.dp, 50.dp),
                         onClick = {
-
+                            TaskManager.addTask(MoneyTask (1, CastCoinsType.CastCoins100w))
                         }
                     ){
                         Text("100W",

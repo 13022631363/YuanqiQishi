@@ -132,7 +132,7 @@ fun NavigationRailSample() {
                     Crossfade(targetState = KeyInfo.checked, animationSpec = tween(700)) { checked ->
                         if (checked)
                         {
-                            UserComponse.UserComponse()
+                            UserCompose.UserCompose()
                         }
                         else CamiCompose.CamiCompose(300.dp, 200.dp)
                     }
@@ -144,7 +144,7 @@ fun NavigationRailSample() {
                 Stone -> StoneCompose.StoneCompose()
                 Feather -> FeatherCompose.FeatherCompose ()
                 Equipment -> EquipmentCompose.EquipmentCompose()
-                Task -> TODO()
+                Task -> TaskCompose.TaskCompose()
             }
         }
 
