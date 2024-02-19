@@ -9,6 +9,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
+import org.dev.compoment.task.FeatherTask
+import org.dev.compoment.task.TaskManager
 import org.dev.http.bean.getItem.Item
 
 object FeatherCompose {
@@ -61,7 +63,7 @@ object FeatherCompose {
                 Spacer(modifier = Modifier.height(20.dp))
 
                 Button (onClick = {
-
+                    TaskManager.addTask(FeatherTask (amount = amount, feather = Item.Feather))
                 },
                     modifier = Modifier.size(120.dp, 50.dp),
                     enabled = enable){

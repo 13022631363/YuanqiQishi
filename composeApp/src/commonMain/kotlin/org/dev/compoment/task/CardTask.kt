@@ -1,37 +1,32 @@
-package org.dev.compoment.bean
+package org.dev.compoment.task
 
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
+import org.dev.compoment.bean.RunState
+import org.dev.compoment.bean.TaskInfo
 import org.dev.http.GetItemRequest
 import org.dev.http.bean.getItem.Item
 
 
-object CardChooseInfo
-{
-    var amount by mutableStateOf(0)
-    var cardType by mutableStateOf(Item.Card.Type.Boss)
-    var card by mutableStateOf(Item.Card ("野猪王", "E01_B02"))
-}
 
 data class CardTask (
     val card: Item.Card,
     override val taskName: String = "卡片任务",
     override val amount: Int,
-    override val taskDetail: String = "$amount ${card.cardName}",
+    override val taskDetail: String = "数量: $amount\n详情: ${card.cardName}",
     override var state: MutableState<RunState> = mutableStateOf(RunState.Wait),
-    override var message: MutableState<String> = mutableStateOf("")
-): TaskInfo{
+    override var message: MutableState<String> = mutableStateOf(""),
+    override var openDialog: MutableState<Boolean> = mutableStateOf(false)
+): TaskInfo {
 
 
     override suspend fun run() {
         var totalAmount = 0
+        state.value = RunState.Running
         GetItemRequest.getItemByType(amount,
             card,
             1000L,
             success = {response, count ->
-                state.value = RunState.Running
                 totalAmount += count
                 message.value = "成功获取 $totalAmount [${card.cardName}]"
             },
@@ -40,7 +35,7 @@ data class CardTask (
                 message.value = it.msg
             })
 
-        if (state.value == RunState.Running)
+        if (state.value != RunState.Error)
             state.value = RunState.Finish
     }
 }

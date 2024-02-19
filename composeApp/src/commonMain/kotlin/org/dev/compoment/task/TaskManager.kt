@@ -6,10 +6,8 @@ import androidx.compose.runtime.setValue
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import org.dev.compoment.bean.CardTask
 import org.dev.compoment.bean.RunState
 import org.dev.compoment.bean.TaskInfo
-import org.dev.http.bean.getItem.Item
 
 object TaskManager
 {

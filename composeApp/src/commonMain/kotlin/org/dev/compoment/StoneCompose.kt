@@ -9,13 +9,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
+import org.dev.compoment.task.StoneTask
+import org.dev.compoment.task.TaskManager
 import org.dev.http.bean.getItem.Item
 
 object StoneCompose {
     @Composable
     fun StoneCompose ()
     {
-        var stoneType by remember { mutableStateOf(Item.Stone.Type.UpgradeStone.chineseName) }
+        var stoneType by remember { mutableStateOf(Item.Stone.Type.UpgradeStone) }
         var stoneTypeExpanded by remember { mutableStateOf(false) }
         var amount by remember { mutableStateOf(1) }
         var enable by remember { mutableStateOf(false) }
@@ -36,7 +38,7 @@ object StoneCompose {
                     stoneTypeExpanded = true
                 },
                     modifier = Modifier.size(120.dp, 50.dp)){
-                    Text(stoneType)
+                    Text(stoneType.chineseName)
                 }
 
                 DropdownMenu(
@@ -49,7 +51,7 @@ object StoneCompose {
                         DropdownMenuItem(text = {
                             Text(type.chineseName)
                         } , onClick = {
-                            stoneType = type.chineseName
+                            stoneType = type
                             stoneTypeExpanded = false
                         })
                     }
@@ -78,7 +80,7 @@ object StoneCompose {
                 Spacer(modifier = Modifier.height(20.dp))
 
                 Button (onClick = {
-
+                    TaskManager.addTask(StoneTask (amount = amount, stoneType = stoneType))
                 },
                     modifier = Modifier.size(120.dp, 50.dp),
                     enabled = enable){

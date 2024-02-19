@@ -10,7 +10,7 @@ import org.dev.http.ServerType.*
 import org.dev.http.bean.getRoleList.GetRoleListSuccessResponse
 import org.dev.http.bean.loginAccount.CommonLoginRequestBody
 import org.dev.http.getRoleList
-import org.dev.http.login4399
+import org.dev.http.BasePostRequest.login4399
 
 /**
  * 卡密验证后的用户信息
@@ -36,6 +36,8 @@ object GameUser
 
     var character = ""
 
+    var loginFailMessage by mutableStateOf("")
+
     val coroutineScope = CoroutineScope(Dispatchers.Default)
 
     var isLogin by mutableStateOf(false)
@@ -52,8 +54,13 @@ object GameUser
                     success = {
                         isLogin = true
                     },
-                    fail = {
+                    accountErrorFail = {
                         isLogin = false
+                        loginFailMessage = "账号异常"
+                    },
+                    passwordErrorFail = {
+                        isLogin = false
+                        loginFailMessage = "密码错误"
                     })
             }
             FOUR_THREE_NINE_NINE -> {

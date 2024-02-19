@@ -1,5 +1,6 @@
 package org.dev.http
 
+import io.ktor.client.call.*
 import org.dev.http.bean.castCoins.CastCoinsRequestBody
 import org.dev.http.bean.castCoins.CastCoinsResponse
 
@@ -14,8 +15,10 @@ enum class CastCoinsType (val castCoinsRequestBody: CastCoinsRequestBody, val sy
  */
 suspend fun castCoins (type: CastCoinsType, success: (CastCoinsResponse) -> Unit)
 {
-    val response = post<CastCoinsRequestBody, CastCoinsResponse, CastCoinsResponse>(url = "https://api.soulknight-prequel.chillyroom.com/Package/CostGold",
+    val response = BasePostRequest.post<CastCoinsRequestBody>(url = "https://api.soulknight-prequel.chillyroom.com/Package/CostGold",
         body = type.castCoinsRequestBody)
 
-    success (response as CastCoinsResponse)
+    success (response.body())
+
+
 }

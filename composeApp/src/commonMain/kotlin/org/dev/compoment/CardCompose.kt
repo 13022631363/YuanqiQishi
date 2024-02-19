@@ -9,11 +9,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
-import kotlinx.coroutines.launch
 import org.dev.compoment.bean.CardChooseInfo
-import org.dev.compoment.bean.CardTask
+import org.dev.compoment.task.CardTask
 import org.dev.compoment.task.TaskManager
-import org.dev.http.LoginAccountRequest
 import org.dev.http.bean.getItem.Item
 
 
@@ -23,9 +21,8 @@ object CardCompose{
     {
         var cardTypeExpanded by remember { mutableStateOf(false) }
         var cardExpanded by remember { mutableStateOf(false) }
-        var cardInput by remember { mutableStateOf("野猪王") }
+        var cardInput by remember { mutableStateOf("") }
         var enable by remember { mutableStateOf(false) }
-        var coroutineScope = rememberCoroutineScope()
 
         Box(modifier = Modifier.fillMaxSize().background(Color.White),
             contentAlignment = Alignment.Center){

@@ -10,6 +10,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
+import org.dev.compoment.bean.EquipmentChooseInfo
+import org.dev.compoment.task.EquipTask
+import org.dev.compoment.task.TaskManager
 import org.dev.http.SceneAreaType
 import org.dev.http.SceneEnterLevelType
 import org.dev.http.bean.getItem.Item
@@ -20,21 +23,15 @@ object EquipmentCompose
     @Composable
     fun EquipmentCompose ()
     {
-        var sceneAreaType by remember { mutableStateOf(SceneAreaType.NAN_BU_CAO_YUAN) }
         var sceneAreaTypeExpanded by remember { mutableStateOf(false) }
-        var sceneEnterLevelType by remember { mutableStateOf(SceneEnterLevelType.Boss) }
         var sceneEnterLevelTypeExpanded by remember { mutableStateOf(false) }
-        var amount by remember { mutableStateOf(1) }
-        var enable by remember { mutableStateOf(false)}
-        var suitBuff by remember { mutableStateOf(SceneEnterResponse.EquipmentPools.EquipmentInfo.Buff ("", "")) }
-        var buff0 by remember { mutableStateOf(SceneEnterResponse.EquipmentPools.EquipmentInfo.Buff ("", "")) }
-        var buff1 by remember { mutableStateOf(SceneEnterResponse.EquipmentPools.EquipmentInfo.Buff ("", "")) }
         var suitBuffExpanded by remember { mutableStateOf(false) }
         var buff0Expanded by remember { mutableStateOf(false) }
         var buff1Expanded by remember { mutableStateOf(false) }
         var suitBuffInput by remember { mutableStateOf("") }
         var buff0BuffInput by remember { mutableStateOf("") }
         var buff1BuffInput by remember { mutableStateOf("") }
+        var enable by  remember { mutableStateOf(false) }
 
         Box(modifier = Modifier.fillMaxSize().background(Color.White),
             contentAlignment = Alignment.Center){
@@ -56,7 +53,7 @@ object EquipmentCompose
                     },
                         modifier = Modifier.size(120.dp, 50.dp)
                     ){
-                        Text(sceneAreaType.areaName, color = Color.White)
+                        Text(EquipmentChooseInfo.sceneAreaType.areaName, color = Color.White)
                     }
 
                     DropdownMenu(
@@ -69,7 +66,7 @@ object EquipmentCompose
                             DropdownMenuItem(text = {
                                 Text(type.areaName)
                             } , onClick = {
-                                sceneAreaType = type
+                                EquipmentChooseInfo.sceneAreaType = type
                                 sceneAreaTypeExpanded = false
                             })
                         }
@@ -88,7 +85,7 @@ object EquipmentCompose
                     },
                         modifier = Modifier.size(120.dp, 50.dp)
                     ){
-                        Text(sceneEnterLevelType.name, color = Color.White)
+                        Text(EquipmentChooseInfo.sceneEnterLevelType.name, color = Color.White)
                     }
 
                     DropdownMenu(
@@ -101,7 +98,7 @@ object EquipmentCompose
                             DropdownMenuItem(text = {
                                 Text(type.name)
                             } , onClick = {
-                                sceneEnterLevelType = type
+                                EquipmentChooseInfo.sceneEnterLevelType = type
                                 sceneEnterLevelTypeExpanded = false
                             })
                         }
@@ -120,7 +117,7 @@ object EquipmentCompose
                     },
                         modifier = Modifier.size(120.dp, 50.dp)
                     ){
-                        Text(suitBuff.chineseName, color = Color.White)
+                        Text(EquipmentChooseInfo.suitBuff.chineseName, color = Color.White)
                     }
 
                     Spacer(modifier = Modifier.height(20.dp))
@@ -139,13 +136,13 @@ object EquipmentCompose
                         modifier = Modifier.size(100.dp, 150.dp),
                         offset = DpOffset(12.dp,(-375).dp)
                     ) {
-                        SceneEnterResponse.EquipmentPools.EquipmentInfo.BuffType.entries[0].buffs.forEach { buff  ->
+                        SceneEnterResponse.EquipmentPools.EquipmentInfo.BuffType.Epic.buffs.forEach { buff  ->
                             if (buff.chineseName.contains(suitBuffInput))
                             {
                                 DropdownMenuItem(text = {
                                     Text(buff.chineseName)
                                 } , onClick = {
-                                    suitBuff = buff
+                                    EquipmentChooseInfo.suitBuff = buff
                                     suitBuffExpanded = false
                                 })
                             }
@@ -165,7 +162,7 @@ object EquipmentCompose
                     },
                         modifier = Modifier.size(120.dp, 50.dp)
                     ){
-                        Text(buff0.chineseName, color = Color.White)
+                        Text(EquipmentChooseInfo.buff0.chineseName, color = Color.White)
                     }
 
                     Spacer(modifier = Modifier.height(20.dp))
@@ -184,13 +181,13 @@ object EquipmentCompose
                         modifier = Modifier.size(100.dp, 150.dp),
                         offset = DpOffset(12.dp,(-375).dp)
                     ) {
-                        SceneEnterResponse.EquipmentPools.EquipmentInfo.BuffType.entries[1].buffs.forEach { buff  ->
+                        SceneEnterResponse.EquipmentPools.EquipmentInfo.BuffType.Common.buffs.forEach { buff  ->
                             if (buff.chineseName.contains(buff0BuffInput))
                             {
                                 DropdownMenuItem(text = {
                                     Text(buff.chineseName)
                                 } , onClick = {
-                                    buff0 = buff
+                                    EquipmentChooseInfo.buff0 = buff
                                     buff0Expanded = false
                                 })
                             }
@@ -210,7 +207,7 @@ object EquipmentCompose
                     },
                         modifier = Modifier.size(120.dp, 50.dp)
                     ){
-                        Text(buff1.chineseName, color = Color.White)
+                        Text(EquipmentChooseInfo.buff1.chineseName, color = Color.White)
                     }
 
                     Spacer(modifier = Modifier.height(20.dp))
@@ -229,13 +226,13 @@ object EquipmentCompose
                         modifier = Modifier.size(100.dp, 150.dp),
                         offset = DpOffset(12.dp,(-375).dp)
                     ) {
-                        SceneEnterResponse.EquipmentPools.EquipmentInfo.BuffType.entries[1].buffs.forEach { buff  ->
+                        SceneEnterResponse.EquipmentPools.EquipmentInfo.BuffType.Common.buffs.forEach { buff  ->
                             if (buff.chineseName.contains(buff1BuffInput))
                             {
                                 DropdownMenuItem(text = {
                                     Text(buff.chineseName)
                                 } , onClick = {
-                                    buff1 = buff
+                                    EquipmentChooseInfo.buff1 = buff
                                     buff1Expanded = false
                                 })
                             }
@@ -246,20 +243,43 @@ object EquipmentCompose
                 }
 
                 item {
+
+                    Text("请输入品质")
+
+                    Spacer(modifier = Modifier.height(20.dp))
+
+                    TextField(
+                        value = EquipmentChooseInfo.quality,
+                        onValueChange = {
+                            runCatching {
+                                EquipmentChooseInfo.quality = it.toInt ().toString()
+                            }.onFailure {
+                                EquipmentChooseInfo.amount = 1
+                                enable = true
+                            }.onSuccess {
+                                enable = (EquipmentChooseInfo.amount != 0)
+                            }
+                        },
+                        modifier = Modifier.size(120.dp, 55.dp),
+                        singleLine = true
+                    )
+
+                    Spacer(modifier = Modifier.height(20.dp))
+
                     Text("请输入数量")
 
                     Spacer(modifier = Modifier.height(20.dp))
 
                     TextField(
-                        value = amount.toString(),
+                        value = EquipmentChooseInfo.amount.toString(),
                         onValueChange = {
                             runCatching {
-                                amount = it.toInt ()
+                                EquipmentChooseInfo.amount = it.toInt ()
                             }.onFailure {
-                                amount = 1
+                                EquipmentChooseInfo.amount = 1
                                 enable = true
                             }.onSuccess {
-                                enable = (amount != 0)
+                                enable = (EquipmentChooseInfo.amount != 0)
                             }
                         },
                         modifier = Modifier.size(120.dp, 55.dp),
@@ -269,7 +289,13 @@ object EquipmentCompose
                     Spacer(modifier = Modifier.height(20.dp))
 
                     Button (onClick = {
-
+                        TaskManager.addTask(EquipTask (amount = EquipmentChooseInfo.amount,
+                            conditions = SceneEnterResponse.EquipmentPools.EquipmentInfo.EquipMatchConditions(equipBuffSuit = EquipmentChooseInfo.suitBuff,
+                                equipBuff0 = EquipmentChooseInfo.buff0,
+                                equipBuff1 = EquipmentChooseInfo.buff1,
+                                quality = EquipmentChooseInfo.quality),
+                            sceneAreaType = EquipmentChooseInfo.sceneAreaType,
+                            sceneEnterLevelType = EquipmentChooseInfo.sceneEnterLevelType))
                     },
                         modifier = Modifier.size(120.dp, 50.dp),
                         enabled = enable){

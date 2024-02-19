@@ -1,5 +1,6 @@
 package org.dev.http
 
+import io.ktor.client.call.*
 import kotlinx.coroutines.delay
 import org.dev.http.bean.sceneEnter.SceneEnterRequestBody
 import org.dev.http.bean.sceneEnter.SceneEnterResponse
@@ -14,10 +15,10 @@ suspend fun sceneEnter (sceneLevelType: SceneEnterLevelType,  sceneAreaType: Sce
 
     val body = SceneEnterRequestBody (sceneLevelType.level, sceneAreaType.areaValue, layer)
 
-    val response = post<SceneEnterRequestBody, SceneEnterResponse, SceneEnterResponse>(url = "https://api.soulknight-prequel.chillyroom.com/Scene/SceneEnter",
-        body = body) as SceneEnterResponse
+    val response = BasePostRequest.post<SceneEnterRequestBody>(url = "https://api.soulknight-prequel.chillyroom.com/Scene/SceneEnter",
+        body = body)
 
-    response.let(success)
+    success (response.body())
 }
 
 /**

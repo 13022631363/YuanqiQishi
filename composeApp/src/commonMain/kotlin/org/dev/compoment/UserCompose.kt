@@ -38,7 +38,6 @@ object UserCompose
         var serverTypeExpand by remember { mutableStateOf(false) }
         var serverType by remember { mutableStateOf(ServerType.TAP_TAP) }
         var canLogin by remember { mutableStateOf(false) }
-        var canSelectRole by remember { mutableStateOf(false) }
         var roleExpand by remember { mutableStateOf(false) }
         var canConfirmRole by remember { mutableStateOf(false) }
 
@@ -121,6 +120,9 @@ object UserCompose
                                     usernameInput = it
                                     canLogin = usernameInput.length >= 5
 
+                                },
+                                prefix = {
+                                         Text(GameUser.loginFailMessage)
                                 },
                                 modifier = Modifier.size(120.dp, 55.dp),
                                 singleLine = true)

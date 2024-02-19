@@ -4,9 +4,11 @@ import androidx.compose.runtime.MutableState
 
 interface TaskInfo
 {
+    var openDialog: MutableState<Boolean>
+
     val taskName: String
 
-    val taskDetail: String
+    val taskDetail:String
 
     val amount: Int
 

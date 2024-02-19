@@ -19,12 +19,33 @@ data class SuccessLoginResponse (
 }
 
 /**
- * 登陆请求失败的返回对象
+ * 登陆请求密码错误失败的返回对象
  */
 @Serializable
-data class FailLoginResponse (
+data class FailLogin1Response (
     val error: String,
     val msg: String?,
     @SerialName ("errordetails")
     val errorDetails: String?,
 )
+
+/**
+ * 登陆请求密码错误失败的返回对象
+ */
+@Serializable
+data class FailLogin2Response (
+    val ok: Boolean,
+    val errorCode: Int,
+    val msg: String,
+    val message: String,
+    @SerialName ("errordetails")
+    val errorDetails: ErrorDetails,
+){
+    @Serializable
+    data class ErrorDetails (
+        val timeLeft: String,
+        val uid: String,
+        val localizedDetail: String
+    )
+}
+

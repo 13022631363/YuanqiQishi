@@ -77,14 +77,14 @@ data class SceneEnterResponse(
 
             data class EquipMatchConditions (
                 val name: String = "",
-                val equipBuffSuit: String = "",
-                val equipBuff0: String = "",
-                val equipBuff1: String = "",
+                val equipBuffSuit: Buff = Buff.emptyBuff,
+                val equipBuff0: Buff = Buff.emptyBuff,
+                val equipBuff1: Buff = Buff.emptyBuff,
                 val quality: String = ""
             ){
                 fun isBlank (): Boolean
                 {
-                    return (name == "" && equipBuff0 == "" && equipBuff1 == "" && equipBuffSuit == "" && quality == "")
+                    return (name == "" && equipBuff0 == Buff.emptyBuff && equipBuff1 == Buff.emptyBuff && equipBuffSuit == Buff.emptyBuff && quality == "")
                 }
 
                 fun filterConditions (): Map<String, String>
@@ -95,14 +95,26 @@ data class SceneEnterResponse(
                         it.isAccessible = true
                         val value = it.get(this)
                         if (value is String)
+                        {
                             if (value != "")
                                 result[it.name] = value
+                        }else if (value is Buff)
+                        {
+                            if (value.id != "")
+                                result[it.name] = value.id
+                        }
+
                     }
                     return result
                 }
             }
 
             data class Buff (val chineseName: String, val id: String)
+            {
+                companion object{
+                    val emptyBuff = Buff ("无视", "")
+                }
+            }
 
             enum class BuffType (val buffs: List<Buff>)
             {
@@ -161,11 +173,11 @@ data class SceneEnterResponse(
                             "\"EBF_REFRESH_CD\":\"气定神闲\",\n" +
                             "\"EBF_SERVANT_MAX\":\"统帅力\",\n" +
                             "\"EBF_SERVANT_WEAPON\":\"羁绊召唤\",\n" +
-                            "\"EBF_LOCK_ATB\":\"心无旁骛\"}"
+                            "\"EBF_LOCK_ATB\":\"心无旁骛\"\n}"
 
                     return commonBuff.decodeFromString<Map<String, String>>().map {
                         Buff(it.value, it.key)
-                    }
+                    }.toMutableList().apply { add(Buff.emptyBuff) }
                 }
 
                 private fun epicBuff (): List<Buff>
@@ -222,11 +234,11 @@ data class SceneEnterResponse(
                             "\"EBFS_RED_YQ\":\"强力普通拳\",\n" +
                             "\"EBFS_RED_MY\":\"精准弹幕 影\",\n" +
                             "\"EBFS_RED_HLW\":\"旋风斩 烈\",\n" +
-                            "\"EBFS_RED_XRW\":\"冰锥术 凝\"}"
+                            "\"EBFS_RED_XRW\":\"冰锥术 凝\"\n}"
 
                     return epicBuff.decodeFromString<Map<String, String>>().map {
                         Buff (it.value, it.key)
-                    }
+                    }.toMutableList().apply { add(Buff.emptyBuff) }
                 }
             }
         }

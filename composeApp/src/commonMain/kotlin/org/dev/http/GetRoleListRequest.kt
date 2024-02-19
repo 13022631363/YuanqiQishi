@@ -1,5 +1,6 @@
 package org.dev.http
 
+import io.ktor.client.call.*
 import org.dev.compoment.bean.GameUser
 import org.dev.http.LoginAccountRequest.publicRevision
 import org.dev.http.bean.getRoleList.GetRoleListFailResponse
@@ -14,23 +15,16 @@ suspend fun getRoleList (success: (GetRoleListSuccessResponse) -> Unit, fail: (G
     val body = GetRoleListRequestBody (480, false)
 
 
-        val  response = post<GetRoleListRequestBody, GetRoleListFailResponse, GetRoleListSuccessResponse>(
+        val  response = BasePostRequest.post<GetRoleListRequestBody>(
             "https://api.soulknight-prequel.chillyroom.com/Character/FetchGameData",
             body
         )
 
-
-
-        when (response) {
-            is GetRoleListFailResponse -> {
-                fail(response)
-            }
-            is GetRoleListSuccessResponse -> {
-                publicRevision = response.gameData.revision.toInt()
-                success(response)
-
-            }
-        }
-
+        if (response.status.value == 200)
+        {
+            val result = response.body<GetRoleListSuccessResponse>()
+            publicRevision = result.gameData.revision.toInt()
+            success(result)
+        }else fail(response.body())
 }
 

@@ -1,5 +1,6 @@
 package org.dev.http
 
+import io.ktor.client.call.*
 import org.dev.http.bean.getItem.*
 import org.dev.http.bean.sceneEnter.SceneEnterResponse
 import org.dev.http.util.NumberUtil
@@ -220,14 +221,12 @@ object GetItemRequest
      */
     suspend fun getItem (body: GetItemRequestBody, success: (GetItemSuccessResponse) -> Unit, fail: (GetItemFailResponse) -> Unit)
     {
-        val response = post<GetItemRequestBody, GetItemFailResponse, GetItemSuccessResponse>(url = "https://api.soulknight-prequel.chillyroom.com/Package/AddV8868",
+        val response = BasePostRequest.post<GetItemRequestBody>(url = "https://api.soulknight-prequel.chillyroom.com/Package/AddV8868",
             body = body)
 
-        when (response)
-        {
-            is GetItemSuccessResponse -> response.apply (success)
-            is GetItemFailResponse -> response.apply(fail)
-        }
+        if (response.status.value == 200)
+            success (response.body())
+        else fail (response.body())
     }
 
     /**
@@ -235,13 +234,11 @@ object GetItemRequest
      */
     suspend fun getEquip (body: GetEquipRequestBody, success: (GetItemSuccessResponse) -> Unit, fail: (GetItemFailResponse) -> Unit)
     {
-        val response = post<GetEquipRequestBody, GetItemFailResponse, GetItemSuccessResponse>(url = "https://api.soulknight-prequel.chillyroom.com/Package/AddV8868", body)
+        val response = BasePostRequest.post<GetEquipRequestBody>(url = "https://api.soulknight-prequel.chillyroom.com/Package/AddV8868", body)
 
-        when (response)
-        {
-            is GetItemSuccessResponse -> response.apply (success)
-            is GetItemFailResponse -> response.apply(fail)
-        }
+        if (response.status.value == 200)
+            success (response.body())
+        else fail (response.body())
     }
 
 }

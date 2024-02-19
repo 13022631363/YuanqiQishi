@@ -1,5 +1,6 @@
 package org.dev.http
 
+import io.ktor.client.call.*
 import org.dev.http.bean.getRoleInfo.GetRoleInfoFailResponse
 import org.dev.http.bean.getRoleInfo.GetRoleInfoSuccessResponse
 
@@ -10,13 +11,14 @@ object GetRoleInfoRequest {
      */
     suspend fun getRoleInfo (success: (GetRoleInfoSuccessResponse) -> Unit, fail: (GetRoleInfoFailResponse) -> Unit)
     {
-        val response = post<String,GetRoleInfoFailResponse, GetRoleInfoSuccessResponse> (url = "https://api.soulknight-prequel.chillyroom.com/Character/Fetch",
+        val response = BasePostRequest.post<String> (url = "https://api.soulknight-prequel.chillyroom.com/Character/Fetch",
             null)
 
-        when (response)
+        if (response.status.value == 200)
+            success (response.body())
+        else
         {
-            is GetRoleInfoSuccessResponse -> success (response)
-            is GetRoleInfoFailResponse -> fail (response.apply {
+            fail (response.body<GetRoleInfoFailResponse>().apply {
                 message = "未选择角色 character 参数未定义"
             })
         }
