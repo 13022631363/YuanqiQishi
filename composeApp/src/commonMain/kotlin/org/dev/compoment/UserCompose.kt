@@ -4,6 +4,7 @@ import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -13,10 +14,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
-import org.dev.compoment.bean.CardChooseInfo
-import org.dev.compoment.bean.GameUser
-import org.dev.compoment.bean.KeyInfo
-import org.dev.compoment.bean.User
+import org.dev.compoment.bean.*
+import org.dev.compoment.task.TaskManager
 import org.dev.http.ServerType
 import org.dev.http.bean.getItem.Item
 import org.dev.http.bean.getRoleList.GetRoleListSuccessResponse
@@ -40,6 +39,7 @@ object UserCompose
         var canLogin by remember { mutableStateOf(false) }
         var roleExpand by remember { mutableStateOf(false) }
         var canConfirmRole by remember { mutableStateOf(false) }
+        var openDialog by remember { mutableStateOf(false) }
 
 
         Surface (modifier = Modifier.fillMaxSize(), color = Color (229, 229, 229)){
@@ -121,11 +121,30 @@ object UserCompose
                                     canLogin = usernameInput.length >= 5
 
                                 },
-                                prefix = {
-                                         Text(GameUser.loginFailMessage)
-                                },
                                 modifier = Modifier.size(120.dp, 55.dp),
                                 singleLine = true)
+                            if (openDialog) {
+
+                                AlertDialog(
+                                    onDismissRequest = {
+                                        openDialog = false
+                                    },
+                                    title = {
+                                        Text(text = "登陆错误")
+                                    },
+                                    text = {
+                                       Text(GameUser.loginFailMessage)
+                                    },
+                                    confirmButton = {
+                                        Button(
+                                            onClick = {
+                                                openDialog = false
+                                            }) {
+                                            Text("确认")
+                                        }
+                                    }
+                                )
+                            }
 
                             Spacer(modifier = Modifier.height(20.dp))
 
@@ -147,6 +166,7 @@ object UserCompose
                             Button (onClick = {
                                 GameUser.coroutineScope.launch {
                                     GameUser.login(usernameInput, passwordInput, serverType)
+                                    openDialog = !GameUser.isLogin
                                 }
                             },
                                 enabled = canLogin,
