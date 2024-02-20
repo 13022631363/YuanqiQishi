@@ -10,11 +10,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.launch
 import org.dev.compoment.bean.EquipmentChooseInfo
+import org.dev.compoment.bean.GameUser
 import org.dev.compoment.task.EquipTask
 import org.dev.compoment.task.TaskManager
-import org.dev.http.SceneAreaType
-import org.dev.http.SceneEnterLevelType
+import org.dev.http.*
 import org.dev.http.bean.getItem.Item
 import org.dev.http.bean.sceneEnter.SceneEnterResponse
 
@@ -32,6 +33,9 @@ object EquipmentCompose
         var buff0BuffInput by remember { mutableStateOf("") }
         var buff1BuffInput by remember { mutableStateOf("") }
         var enable by  remember { mutableStateOf(false) }
+
+        var difficultyTypeExpanded by remember { mutableStateOf(false) }
+        var difficultyType by remember { mutableStateOf(Difficulty.Common) }
 
         Box(modifier = Modifier.fillMaxSize().background(Color.White),
             contentAlignment = Alignment.Center){
@@ -74,6 +78,51 @@ object EquipmentCompose
 
                     Spacer(modifier = Modifier.height(20.dp))
                 }
+
+                item {
+                    Text("请选择难度")
+
+                    Spacer(modifier = Modifier.height(20.dp))
+
+                    Button (onClick = {
+                        difficultyTypeExpanded = true
+                    },
+                        modifier = Modifier.size(120.dp, 50.dp)
+                    ){
+                        Text(difficultyType.chineseName, color = Color.White)
+                    }
+
+                    DropdownMenu(
+                        expanded = difficultyTypeExpanded,
+                        onDismissRequest = { difficultyTypeExpanded = false },
+                        modifier = Modifier.size(100.dp, 150.dp),
+                        offset = DpOffset(12.dp,(-375).dp)
+                    ) {
+                        Difficulty.entries.forEach { type  ->
+                            DropdownMenuItem(text = {
+                                Text(type.chineseName)
+                            } , onClick = {
+                                difficultyType = type
+                                difficultyTypeExpanded = false
+                            })
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(20.dp))
+
+                    Button (onClick = {
+                        GameUser.coroutineScope.launch {
+                            GameDifficultyRequest.setDifficulty(difficultyType.value)
+                        }
+                    },
+                        modifier = Modifier.size(120.dp, 50.dp)
+                    ){
+                        Text("确定", color = Color.White)
+                    }
+
+                    Spacer(modifier = Modifier.height(20.dp))
+                }
+
 
                 item {
                     Text("请选择地图难度")

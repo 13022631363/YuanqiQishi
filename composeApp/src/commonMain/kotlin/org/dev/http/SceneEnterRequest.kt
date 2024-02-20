@@ -66,3 +66,11 @@ enum class SceneAreaType (val areaName: String, val areaValue: Int)
         }
     }
 }
+
+enum class Difficulty (val chineseName: String, val value: Int){
+    Common ("普通",0),
+    Jing_Rui ("精锐", 1),
+    Ying_Xiong ("英雄", 2),
+    Zha_Tian ("炸天", 3),
+    Super_Zha_Tian ("超级炸天", 4)
+}
