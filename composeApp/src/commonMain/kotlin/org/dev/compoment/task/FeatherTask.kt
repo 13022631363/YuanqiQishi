@@ -23,8 +23,8 @@ data class FeatherTask(
         GetItemRequest.getItemByType(amount,
             feather,
             1000L,
-            success = {response, count ->
-                totalAmount += count
+            success = {response, uuids ->
+                totalAmount += uuids.size
                 message.value = "成功获取 $totalAmount [${feather.name}]"
             },
             fail = {

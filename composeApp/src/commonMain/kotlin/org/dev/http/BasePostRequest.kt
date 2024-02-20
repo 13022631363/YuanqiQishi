@@ -54,10 +54,10 @@ object BasePostRequest {
             method = HttpMethod.Post
             url(url)
             body?.let {
-                setBody(body.encodeToString())
+                setBody(body)
             }
 
-            println(body.encodeToString())
+            println(body)
             headers.apply {
                 append("x-distro-id", currentServerType.uuid)
                 append("x-unique-id", "b0cf8709c2fe262c")

@@ -23,8 +23,8 @@ data class StoneTask(
         GetItemRequest.getItemByType(amount,
             stoneType.stone,
             1000L,
-            success = {response, count ->
-                totalAmount += count
+            success = {response, uuids ->
+                totalAmount += uuids.size
                 message.value = "成功获取 $totalAmount [${stoneType.chineseName}]"
             },
             fail = {

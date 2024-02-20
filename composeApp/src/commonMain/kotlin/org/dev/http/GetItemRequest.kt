@@ -1,6 +1,12 @@
 package org.dev.http
 
+import com.google.gson.Gson
 import io.ktor.client.call.*
+import io.ktor.client.statement.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.currentCoroutineContext
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.newCoroutineContext
 import org.dev.http.bean.getItem.*
 import org.dev.http.bean.sceneEnter.SceneEnterResponse
 import org.dev.http.util.NumberUtil
@@ -20,7 +26,7 @@ object GetItemRequest
                                    delay: Long,
                                    sceneEnterSuccess: (SceneEnterResponse) -> List<String>,
                                    itemInfoBuild: (String) -> GetItemRequestBody.Settlement.ItemInfo,
-                                   everySuccessfulAcquisition: (GetItemSuccessResponse, Int) -> Unit,
+                                   everySuccessfulAcquisition: (GetItemSuccessResponse, List<String>) -> Unit,
                                    ifFailure: (GetItemFailResponse) -> Unit)
     {
         var currentTotalAmount = 0
@@ -71,7 +77,7 @@ object GetItemRequest
 
             getItem(body,
                 success = {
-                    everySuccessfulAcquisition (it, body.guids.size)
+                    everySuccessfulAcquisition (it, body.guids)
                 },
                 fail = {
                     ifFailure (it)
@@ -89,8 +95,9 @@ object GetItemRequest
      * @param success 如果成功 回调函数持有 1.物品获取成功的响应体 2.成功获取的数量
      * @param fail 如果失败 回调函数持有 1.物品获取失败响应体
      */
-    suspend fun getItemByType  (amount: Int, item: Item, delay: Long, success: (GetItemSuccessResponse, Int) -> Unit, fail: (GetItemFailResponse) -> Unit)
+    suspend fun getItemByType  (amount: Int, item: Item, delay: Long, success: (GetItemSuccessResponse, List<String>) -> Unit, fail: (GetItemFailResponse) -> Unit)
     {
+        val scope = CoroutineScope (currentCoroutineContext())
         sameCount(amount, delay,
             sceneEnterSuccess = {
                 when (item)
@@ -111,12 +118,64 @@ object GetItemRequest
 
                 itemInfoCopy
             },
-            everySuccessfulAcquisition = {response, successAmount ->
-                success (response, successAmount)
+            everySuccessfulAcquisition = {response, successUUIDs ->
+                success (response, successUUIDs)
+                scope.launch {
+                    inputItemToDepository(successUUIDs, item)
+                }
             },
             ifFailure = { response ->
                 fail (response)
             })
+    }
+
+    private suspend fun inputItemToDepository(guids: List<String>, item: Item)
+    {
+        val gson = Gson ()
+        var url = ""
+        val bodyMap: MutableMap<String, Any>
+        when (item)
+        {
+            /**
+             * {"cardBook":
+             * {"1":{"E01_B02":39,
+             * "E01_S03":1,"E03_B01":1,
+             * "E04_S06":1,"E05_S02":4,
+             * "E07_B02":1,"E14_S05":1,
+             * "NPC_Alchemy":1,"NPC_Druid":1,
+             * "NPC_Paladin":1,"NPC_Vampire":1,
+             * "Season01_E01_S03":1,"Season01_E05_B02":1,
+             * "Season01_E05_S03":1,"E01_B01":2}},
+             * "gameRevision":"20"}
+             * 这里显然放进仓库后返回的是仓库中共有多少卡片和公共版本
+             */
+            is Item.Card -> {
+                url = "https://api.soulknight-prequel.chillyroom.com/Card/PutInCardBook"
+                bodyMap = gson.fromJson("""{"cards":[] ,"gameRevision": "${LoginAccountRequest.publicRevision}"}""", Map::class.java).toMutableMap() as MutableMap<String, Any>
+                LoginAccountRequest.publicRevision++
+                (bodyMap["cards"] as MutableList<String>).addAll(guids)
+            }
+
+            /**
+             * {"feather":{"1":22}}
+             */
+            is Item.Feather -> {
+                url = "https://api.soulknight-prequel.chillyroom.com/Infinity/PutInFeathers"
+                bodyMap = gson.fromJson("""{"guids": []}""", Map::class.java).toMutableMap() as MutableMap<String, Any>
+                (bodyMap["guids"] as MutableList<String>).addAll(guids)
+            }
+
+            /**
+             * {"currency":{"stone_upgrade":8}}
+             */
+            is Item.Stone ->{
+                url = "https://api.soulknight-prequel.chillyroom.com/Blacksmith/ImportStones"
+                bodyMap = gson.fromJson("""{"stones":[]}""", Map::class.java).toMutableMap() as MutableMap<String, Any>
+                (bodyMap["stones"] as MutableList<String>).addAll(guids)
+            }
+        }
+
+        BasePostRequest.post(url, gson.toJson(bodyMap))
     }
 
     /**
