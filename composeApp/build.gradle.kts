@@ -112,8 +112,8 @@ compose.desktop {
         mainClass = "MainKt"
 
         nativeDistributions {
-            targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = "cn.dev"
+            targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Exe)
+            packageName = "YuanqiQishi"
             packageVersion = "1.0.0"
         }
     }

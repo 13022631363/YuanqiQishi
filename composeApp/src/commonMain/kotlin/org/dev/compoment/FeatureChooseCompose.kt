@@ -118,7 +118,8 @@ fun NavigationRailSample() {
                                 modifier = Modifier.size(30.dp),
                             ) },
                             selected = selectedItem == index,
-                            onClick = { selectedItem = index }
+                            onClick = { selectedItem = index },
+                            enabled = KeyInfo.task
                         )
                     }
 

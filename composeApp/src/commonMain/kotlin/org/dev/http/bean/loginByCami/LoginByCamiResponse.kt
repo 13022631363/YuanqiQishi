@@ -4,7 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class LoginByCamiSuccessResponse (
+class LoginByCamiSuccessResponse (
     val code: String,
     val id: String,
     val end_time: String,
@@ -18,7 +18,9 @@ data class LoginByCamiSuccessResponse (
     val imei: String,
     val change: String,
     val core: String
-)
+){
+    constructor(): this ("", "", "", "", 0L, "", "", "", 0L,"", "", "", "")
+}
 
 @Serializable
 data class LoginByCamiFailResponse (

@@ -15,4 +15,5 @@ data object KeyInfo {
     var stone by mutableStateOf(false)
     var equip by mutableStateOf(false)
     var feather by mutableStateOf(false)
+    var task by mutableStateOf(false)
 }

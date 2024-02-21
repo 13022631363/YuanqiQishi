@@ -10,8 +10,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
+import org.dev.compoment.bean.HeartbeatTask
 import org.dev.compoment.bean.KeyInfo
 import org.dev.compoment.bean.User
+import org.dev.http.HeartBeatRequest
 import org.dev.http.cami.LoginByCami.loginByCami
 
 
@@ -72,6 +74,7 @@ object CamiCompose
                 Spacer(modifier = Modifier.height(30.dp))
 
                 Button(onClick = {
+                    HeartbeatTask.cami = KeyInfo.cami
                     scope.launch {
                         loginByCami (KeyInfo.cami,
                             success = {
@@ -81,13 +84,23 @@ object CamiCompose
                                 KeyInfo.stone = true
                                 KeyInfo.feather = true
                                 KeyInfo.equip = true
+                                KeyInfo.task = true
                                 User.id = it.id
                                 User.endTime = it.end_time
                                 User.amount = it.amount
+                                HeartbeatTask.stateCode = it.statecode
                             },
                             fail = {
                                 KeyInfo.checked = false
+                                KeyInfo.money = false
+                                KeyInfo.card = false
+                                KeyInfo.stone = false
+                                KeyInfo.feather = false
+                                KeyInfo.equip = false
+                                KeyInfo.task = false
                             })
+
+                        Thread (HeartbeatTask).start()
                     }
                 },
                     modifier = Modifier.size (sizeWidth, 50.dp),

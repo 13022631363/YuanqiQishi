@@ -63,9 +63,9 @@ object GameUser
                         loginFailMessage = "密码错误"
                     })
             }
-            FOUR_THREE_NINE_NINE -> {
-//                login4399(username, password, )
-            }
+//            FOUR_THREE_NINE_NINE -> {
+////                login4399(username, password, )
+//            }
         }
     }
 
